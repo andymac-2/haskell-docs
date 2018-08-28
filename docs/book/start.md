@@ -8,15 +8,17 @@ Learning Haskell is hard. Coming from a background of almost any other programmi
 
 The first thing any programmer does wiht any language is write a "Hello World" program. This ensures that your build environment is set up correctly. I reccomend [the haskell tool stack](https://github.com/commercialhaskell/stack/) for first time users. If you already have a haskell environment, you can sklip the next section
 
-## An aside: Installing the Haskell tool stack.
+## Setting up your environment
 
-Once stack is installed navigate into an empty directory and run
+The best way to learn programming is to start writing programs. I'm not going to try to get bogged down with details about what the best way to set your environment is, as this can be corrected later. Ideally we can get quickly to the point in which you can start writing useful programs in Haskell, covering some of the main features of the language but may skip over some of the more techincal details. Experienced programmers may find this chapter misleading, as some of the content may not be precise, or best practice.
+
+To get a useful environment oprational, I suggest installing the Haskell tool stack. A tutorial can be found [here](https://docs.haskellstack.org/en/stable/install_and_upgrade/). If you already have a haskell environment installed, you can skip this section and go to "Your First Program". Once stack is installed navigate into a working directory and run the following:
 
 ```bash
 $ stack new hello-world
 ```
 
-Once this is installed you should see a directory structure:
+Once this is complete you should see a directory structure:
 
 ```bash
 .
@@ -39,34 +41,68 @@ Once this is installed you should see a directory structure:
 navigate into `./hello-world/app` and open `Main.hs` in you favourite text editor and type the following:
 
 ```haskell
-module Main where
-
 main :: IO ()
 main = putStrLn "Hello World!"
 ```
 
-then run
+then run the following to build your program:
 
 ```bash
 $ stack build
 ```
 
-Which may take some time as it installs the Gascow Haskell Compiler (GHC). After this step is completed, run your program using
+Which may take some time as it installs the Gascow Haskell Compiler (GHC) for the first time. After this step is completed, run your program using
 
 ```bash
 $ stack exec hello-world-exe
 Hello World!
 ```
 
-If you see the words "Hello World!" On the screen, then your program has compiled, and you have completed the hardest part of this book.
+If you see the words "Hello World!" On the screen, then your environment is now set up. You can use the command `stack build && stack exec hello-world-exe` in order to compile and run your program. 
 
-## Your first Haskell program
+## Your First Program
 
-The best way to learn programming is to start writing programs. I'm not going to try to get bogged down with details about what the best way to set your environment is, as this can be corrected later. For now, we have an environment where we can write to `Main.hs` and compile and run with `stack build && stack exec hello-world-exe`. So if you haven't already, write the following to `Main.hs` and run it. You should see the following:
+To begin, let's start by writing a simple "Hello World!" program [Note 1](#note-1).
+
+```haskell
+main :: IO ()
+main = putStrLn "Hello World!"
+```
 
 ```
 Hello World!
 ```
 
-Once you have seen this, you know that your build enviroment is set up correctly.
+Once you have seen this, you know that your build enviroment is set up correctly. To explain the program itself, it will help to break it into parts. Haskell programs are made up of *functions*. Functions take information in the form of *arguments* and return a result. Functions are defined as equal to *expressions*, and running a Haskell program is equivalent to evaluating these expressions. The first line of the program,
 
+``` haskell
+main :: IO ()
+```
+
+decalares that the function called `main` has a type of `IO ()`. The two colons indicate can be read as "has type of", and since everything in Haskell is a function, we don't need any special syntax to represent this.
+
+Functions in Haskell may be similar to those found in other programming languages, but unlike functions in other languages, the only thing that a function in Haskell can do is return a value, and that value must only be determined by the information given to it by it's arguments. A function that does something else apart from returning a value based purely on it's arguments is said to have *side effects*. We will talk about side effects in more detail later.
+
+In Haskell if a function has any side effects, they must be declared as part of the function's *type*. In order for any program to be useful, it must perform some input, and some output. Since these are considered side effects by Haskell, they must be declared beforehand. The type `IO ()` has two parts. `IO` stands for the input/output side effect, and `()` is the return value. `()` is the same as `void`, `null`, `undefined` or `nil` in other languages. It essentially means that the function returns no value. That means, the only thing that `main` will do, if it does not return a value, is to perform some input/output. This will also be covered in more detail later.
+
+The second line of the program defines what `main` actually is:
+
+``` haskell
+main = putStrLn "Hello World!"
+```
+
+`main` is the entry point for a Haskell program, and evaluation (execution) will start there. This is where Haskell, and regular imperative programming languages start to really differ. Instead of telling the computer what steps to perform, we simply tell the computer *what we want the result to be*. `main` is *equal* to the expression `putStrLn "Hello World!"`. We say that Haskell is a *declarative* language, instead of an *imperative* one.
+
+A series of characters surrounded by double quotes like "Hello World!" is called a *String* in Haskell (note the capital S in "String"). a `String` is a `List` of `Char` (characters). And as expected, it stores some text.
+
+`putStrLn` (**put** a **str**ing and a **l**i**n**e) will take a `String` as an argument and print it to the screen. When we give one or many arguments to a function, we are said to have *applied* those arguments. Function application in Haskell is denoted by writing the function name, and then all of the arguments separated by some whitespace:
+
+```haskell
+functionName argment1 argument2 ... argumentN
+```
+
+## Notes
+
+#### Note 1
+
+I'm probably going to be criticised by experianced haskellers for using "Hello World" as a starting program, as it will not adequately explain how `IO` works in Haskell. Unfortunately the only other way is to let users learn a large volume of material before learning how to write useful programs. Since this book is designed primarily to write useful programs, and not to explain mathematical theory, I don;t think it's necessary this early to explain what monads are, but primarily just how to use them.
