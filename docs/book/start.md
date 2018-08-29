@@ -119,7 +119,70 @@ main = let
     in putStrLn (show y)
 ```
 
-The result of running this program should be `30`.
+The result of running this program should be `30`. Let's examine the part after `main =`. We have `let <expressions> in <expression>`. Writing `let x in y` in Haskell is called a *let expression*. And it simply means that given what is written in `x`, solve for `y`. Consider for a moment that you are in a Math class and you are asked the following question, which is a duplicate of the above code:
+
+```haskell
+Given that
+y = 2x
+x = 10 + 5
+
+Solve for y
+```
+
+your working for this question may be
+
+```haskell
+y   = 2x      
+    = 2 * (10 + 5) (substitute x)      
+    = 2 * 15 (simplify)      
+    = 30 (simplify)
+```
+
+And this is exactly what Haskell does behind the scenes. Now Haskell con only do two things to evaluate an expression. It can either *simplify* and expression if it has enough information, or it can *substitute* one expression into another. These are the only things that Haskell does. If you give it a problem that cannot be solved using these two operations, then it will fail. For example let's consider another question you might see in a Mathematics class.
+
+```haskell
+Given that
+y = 2x
+x = y - 5
+
+Solve for y
+```
+
+Now a human can solve `x = 5` and `y = 10`, but Haskell is going to try to do the following:
+
+```haskell
+y   = 2 * x
+    = 2 * (y - 5) (substitute x = y - 5)
+    = 2 * (2 * (y - 5) - 5) (substitute y = 2 * (y - 5) using the above line)
+    = 2 * (2 * (2 * (2 * (y - 5) - 5) - 5) - 5) (substitution y using the above line)
+    ...
+```
+
+And it will continue substituting forever without reaching an answer. It is important that you only give expressions that Haskell can always evaluate using only simplification and substitution, otherwise your program will either run out of memory, or run indefinitely. If your program hangs, press `Ctrl + C` on the command prompt to stop it.
+
+The only other new thing we see here is the `show` function. `show` is a function which will convert something into a `String`. In this case, we use it to convert an integer into a string so we can print it to the screen. So in total, Haskell does the following:
+
+```haskell
+main = let
+    y = x * 2
+    x = 10 + 5
+
+    in putStrLn (show y)
+    
+main    = putStrLn (show y)
+        = putStrLn (show (x * 2))
+        = putStrLn (show ((10 + 5) * 2))
+        = putStrLn (show (15 * 2))
+        = putStrLn (show 30)
+        = putStrLn "30"
+```
+
+and then we are complete.
+
+#### Exercises
+
+1. Experiment with different mathematical expressions for `x` and `y`. Try adding something for `z` as well. 
+1. 
 
 ## Lists and arithmetic
 
