@@ -100,7 +100,26 @@ functionName argment1 argument2 ... argumentN
 ```
 In other languages, function application is usually denoted by parenthesis (e.g. `myFunction()`). Since in Haskell we are going to be using function applicatin a lot, parenthesi are not used.
 
-A series of characters surrounded by double quotes like "Hello World!" is called a *String* in Haskell (note the capital S in "String"). a `String` is a `List` (collection) of `Char` (characters). As expected, it stores some text.
+A series of characters surrounded by double quotes like "Hello World!" is called a *String* in Haskell (note the capital S in "String"). a `String` is a `List` (collection) of `Char` (characters). As expected, it stores some text. When expressing a string like this, it can be called a string literal.
+
+#### Exercises
+
+1. Try replace `putStrLn` with `putStr`. What happens?
+
+## A simple calculator
+
+The next exercise will be to create a simple calculator so we can appreciate the way that Haskell runs it's programs.
+
+```haskell
+main :: IO ()
+main = let
+    y = x * 2
+    x = 10 + 5
+
+    in putStrLn (show y)
+```
+
+The result of running this program should be `30`.
 
 ## Lists and arithmetic
 
@@ -155,9 +174,19 @@ Any line beginning with `--` is a comment. Comments begin from the hyphen and ex
 
 Generally speaking however, for any top level declarations, (where something is defined with no indentation) writing a type signature is a good idea. Type signatures elsewhere are written at the discretion of the programmer: too many, and the code becomes cluttered, too few, and you will recieve error messages which are not informative.
 
-in the definition of main, we are introduced to a new function: `putStr`. `putStr` is similar to `putStrLn` but will not print a newline at the end.
+In the definition of main, we are introduced to a new function: `putStr`. `putStr` is similar to `putStrLn` but will not print a newline at the end. Instead of providing a string literal to `putStr` we provide `evenNumbers` instead. In some other languages, we would need to have defined `evenNumbers` before we use it. In Haskell, *this does not matter*. We can use a value before or after it has been defined with no difference either way.
 
-Next we are introduced to lists and numbers. Haskell has a few different types for numbers which we can use. The type `Int` is a data type which is guaranteed to be able to express any single number between -2^29 and 2^29-1 (-536870912 to 536870911).
+Next we are introduced to lists and numbers. Haskell has a few different types for numbers which we can use. The type `Int` is a data type which is guaranteed to be able to express any single number between -2^29 and 2^29-1 (-536870912 to 536870911). It may be able to store numbers larger or smaller than this range, but this is machine and compiler dependent. Haskell also has other numeric types which we can use:
+
+* `Integer` an integral type which can store *any* integer. It has no bounds.
+* `Float` a single precision floating point number
+* `Double` a double prescision floating point number
+* `(Integral a) => Ratio a` e.g. `Ratio Int` or `Ratio Integer`. A rational number. `Ratio Int` can represent any fraction that can be expressed by one `Int` divided by another. `Ratio Integer` can represent any rational number.
+* `(RealFloat a) => Complex a` e.g. `Complex Float` or `Complex Double`. A complex number. `Complex Float` will be a complex number where the real and imaginary parts are single precision floating point numbers. `Complex Double` will be the same, but with double precision numbers.
+
+For most ordinary calculations, `Int` is preferred. Although `Integer` can express larger or smaller numbers, it is also considerably slower. For those using stack or GHC, the complete list of numeric types can be found in the documentation for `Prelude` in the `base` package.
+
+Lists are a type of collection of something. A list of `Int` is denoted as `[Int]`, so when we write `numbers :: [Int]` we say that `numbers` is a list of `Int`. When we write a list, we write it as several values seperated by commas, and surrounded by square brackets. in our example our list is `[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]`
 
 TODO
 
