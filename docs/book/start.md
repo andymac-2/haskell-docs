@@ -138,7 +138,9 @@ y   = 2x
     = 30 (simplify)
 ```
 
-And this is exactly what Haskell does behind the scenes. Now Haskell con only do two things to evaluate an expression. It can either *simplify* and expression if it has enough information, or it can *substitute* one expression into another. These are the only things that Haskell does. If you give it a problem that cannot be solved using these two operations, then it will fail. For example let's consider another question you might see in a Mathematics class.
+And this is exactly what Haskell does behind the scenes. Note that because Haskell works the same way as a math student does, it does not require the expressions to be in order. Defining `y` before `x` is perfectly valid Haskell. In addition, the values for `x` and `y` are constants, and we cannot reassign them later. Haskell does not have variables in the traditional sense like other programming languages.
+
+Haskell can only do two things to evaluate an expression. It can either *simplify* and expression if it has enough information, or it can *substitute* one expression into another. If you give it a problem that cannot be solved using these two operations, then it will fail. For example let's consider another question you might see in a Mathematics class.
 
 ```haskell
 Given that
@@ -158,7 +160,7 @@ y   = 2 * x
     ...
 ```
 
-And it will continue substituting forever without reaching an answer. It is important that you only give expressions that Haskell can always evaluate using only simplification and substitution, otherwise your program will either run out of memory, or run indefinitely. If your program hangs, press `Ctrl + C` on the command prompt to stop it.
+And it will continue substituting forever without reaching an answer. It is important that you only give expressions that Haskell can always evaluate using only simplification and substitution, otherwise your program will either run out of memory, or run indefinitely. In this case, because Haskell cannot evaluate `y`, we say that `y` is equal to *bottom*, or ⊥ (which is written as `_|_` in plain ASCII). If something is equal to bottom, then there has been sime kind of error when trying to evaluate it. If your program hangs, press `Ctrl + C` on the command prompt to stop it.
 
 The only other new thing we see here is the `show` function. `show` is a function which will convert something into a `String`. In this case, we use it to convert an integer into a string so we can print it to the screen. So in total, Haskell does the following:
 
@@ -177,12 +179,21 @@ main    = putStrLn (show y)
         = putStrLn "30"
 ```
 
-and then we are complete.
+and after "30" has been printed to the screen, we are complete.
+
+#### Summary
+
+1. `putStrLn` will print a string and go to the next line
+1. `let x in y` means given what's written in `x`, solve for `y`
+1. Haskell only uses substitution and simplification when evaluating expressions
+1. Expressions which cannot be solved, or have some kind of error are said to be equal to "bottom" or ⊥.
+1. `show` will convert something to a `String`. In this case, an integer.
 
 #### Exercises
 
+1. Replace `y = x * 2` with `y = x * 2.0`. Does anything change?
 1. Experiment with different mathematical expressions for `x` and `y`. Try adding something for `z` as well. 
-1. 
+1. For some of your modifications try to evaluate the expressions by hand like we did above.
 
 ## Lists and arithmetic
 
@@ -201,7 +212,7 @@ For the next program we'll try to print all the even numbers below 20:
 18
 ```
 
-The program consists of multiple function definitions, and we are introduced to some new concepts: comments, lists, integers, some new syntax, and some new functions.
+The program consists of multiple function definitions, and we are introduced to some new concepts: comments, lists, new syntax, and some new functions.
 
 ```haskell
 -- Print some even numbers
@@ -237,7 +248,7 @@ Any line beginning with `--` is a comment. Comments begin from the hyphen and ex
 
 Generally speaking however, for any top level declarations, (where something is defined with no indentation) writing a type signature is a good idea. Type signatures elsewhere are written at the discretion of the programmer: too many, and the code becomes cluttered, too few, and you will recieve error messages which are not informative.
 
-In the definition of main, we are introduced to a new function: `putStr`. `putStr` is similar to `putStrLn` but will not print a newline at the end. Instead of providing a string literal to `putStr` we provide `evenNumbers` instead. In some other languages, we would need to have defined `evenNumbers` before we use it. In Haskell, *this does not matter*. We can use a value before or after it has been defined with no difference either way.
+In the definition of main, we are introduced to a new function: `putStr`. `putStr` is similar to `putStrLn` but will not print a newline at the end.
 
 Next we are introduced to lists and numbers. Haskell has a few different types for numbers which we can use. The type `Int` is a data type which is guaranteed to be able to express any single number between -2^29 and 2^29-1 (-536870912 to 536870911). It may be able to store numbers larger or smaller than this range, but this is machine and compiler dependent. Haskell also has other numeric types which we can use:
 
@@ -250,6 +261,8 @@ Next we are introduced to lists and numbers. Haskell has a few different types f
 For most ordinary calculations, `Int` is preferred. Although `Integer` can express larger or smaller numbers, it is also considerably slower. For those using stack or GHC, the complete list of numeric types can be found in the documentation for `Prelude` in the `base` package.
 
 Lists are a type of collection of something. A list of `Int` is denoted as `[Int]`, so when we write `numbers :: [Int]` we say that `numbers` is a list of `Int`. When we write a list, we write it as several values seperated by commas, and surrounded by square brackets. in our example our list is `[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]`
+
+`makeEven` is our first user defined function we have encountered so far. 
 
 TODO
 
