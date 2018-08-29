@@ -195,6 +195,40 @@ and after "30" has been printed to the screen, we are complete.
 1. Experiment with different mathematical expressions for `x` and `y`. Try adding something for `z` as well. 
 1. For some of your modifications try to evaluate the expressions by hand like we did above.
 
+## Functions
+
+When we define top level functions, we can call them from anywhere in the file. We can modify our program from above to define some new custom functions. Valid function names include lowercase letters, uppercase letters, digits, underscores, and apostrophes. Function names must start with a lowercase letter. Valid function names therefore include `x`, `cat`, `orangeFruit94` and `charlie's_function` but do not include `Apples`, `2real` or `bad-function-name`.
+
+Functions can also be operators. Operators contain one or more of the following symbols:
+
+```
+!, #, $, %, &, ⋆, +, ., /, <, =, >, ?, @, \, ^, |, -, ~, :
+```
+
+In addition to this, they must not begin with a colon. Some operators we are already familiar with are `+` and `*` from the above examples. Now that we have that out of the way, let's start making some of our own functions. we will create a function which takes a temperature in Celsius and returns a temperature in Fahrenheit using the formula `f = (9/5)C + 32`, and another function which takes the mean of two numbers. We will make this one an operator and create a funny symbol for it (for example: `>.<`)
+
+```haskell
+toFahrenheit :: Int -> Int
+toFahrenheit c = (9 * c) `quot` 5 + 32
+
+(>.<) :: Int -> Int -> Int
+x >.< y = (x + y) `quot` 2
+```
+
+We are introduced to some new syntax. First of all, out type signatures looks a bit different. `toFahrenheit :: Int -> Int` means that `toFahrenheit` is a function which takes an `Int` (the temperature in celsius) as an argument and returns an `Int` (the temperature in Fahrenheit). We also have `(>.<) :: Int -> Int -> Int`. That means that the function `>.<` takes an `Int`, then it takes another `Int`, then it returns the average of the two as an `Int`. When writing the type signature, we need to put `>.<` in parenthesis, which is why we see `(>.<)`.
+
+When we define functions that are operators (i.e. using symbols like `>.<` or `+` or `*`), they are automatically applied using *infix notation*. Infix is where we use functions like `+` and `*` which we put in between arguments. For example, `+` is a function which takes two arguments, and returns the result of adding them together (e.g. 2 + 5), `*` is a similar function which takes two numbers as arguments but instead returns the result of the two numbers multiplied together.
+
+If instead we use letters, numbers, underscores and apostrophes to define a function (e.g `toFahrenheit`). By default, these functions are applied using *prefix notation*. Prefix notation is where the function name is placed before the arguments (e.g: `show y`)
+
+If we want to use a prefix function as an infix operator, we can surround the function name in backticks. If we want to use an infix operator as a prefix function, we can surround it in parenthesis:
+
+```haskell
+x >.< y = (>.<) x y
+quot x y = x `quot` y
+```
+
+
 ## Lists and arithmetic
 
 For the next program we'll try to print all the even numbers below 20:
