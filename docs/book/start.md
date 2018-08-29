@@ -4,9 +4,13 @@
 
 *Disclaimer: I made this to help me learn, and document the ways in which I would solve problems with the language. I don't guarantee the wuality of what I write. I'm always learning, so if there is a different or better way of doing things let me know!*
 
-Learning Haskell is hard. Coming from a background of almost any other programming language, you have to forget almost everything you learn. My experiences with Haskell have made me a better programmer for that reason. Haskell should hopefully, by the end of this document, make you think in different ways about solving problems in programming. I will try my hardest to cater for different learning styles, and try to distill the essencve of what programming in Haskell is all about. I will assume a high school level of mathematics, basic command line usage, and knowledge of at least one other programming language. Examples not written in haskell will be written in JavaScript, but in depth knwledge of JavaScript will not be required.
+Learning Haskell is hard. Coming from a background of almost any other programming language, you have to forget almost everything you learn. Haskell should hopefully, by the end of this document, make you think in different ways about solving problems in programming. 
 
-The first thing any programmer does wiht any language is write a "Hello World" program. This ensures that your build environment is set up correctly. I reccomend [the haskell tool stack](https://github.com/commercialhaskell/stack/) for first time users. If you already have a haskell environment, you can sklip the next section
+My particular style of learning is much less about teaching theoretical knowledge, but more emphasis is given towards how to write useful programs, the kinds of programs that you would write in other programming languages. Previous tutorials have often referred students to look at source code, or have taught specific implementations in order to gleam useful lessons. I believe that this apporach is limited, as source code changes over time as new requirements need to be met. In addition, source code can get some complexity creep which makes it difficult for beginners to read. Specifically in functional programming, due to the lack of side effects, once a function has been implemented, it's implementation details are almost completely irrelevant. I understand that this approach may not be for everyone, but this document should describe my learning journey well.
+
+In terms of previous knowledge, I will assume a high school level of mathematics, basic command line usage, and knowledge of at least one other programming language.
+
+The first thing any programmer does with any language is write a "Hello World" program. This ensures that your build environment is set up correctly. I reccomend [the haskell tool stack](https://github.com/commercialhaskell/stack/) for first time users. If you already have a haskell environment, you can sklip the next section
 
 ## Setting up your environment
 
@@ -133,9 +137,9 @@ your working for this question may be
 
 ```haskell
 y   = 2x      
-    = 2 * (10 + 5) (substitute x)      
-    = 2 * 15 (simplify)      
-    = 30 (simplify)
+    = 2 * (10 + 5)      substitute x
+    = 2 * 15            simplify   
+    = 30                simplify
 ```
 
 And this is exactly what Haskell does behind the scenes. Note that because Haskell works the same way as a math student does, it does not require the expressions to be in order. Defining `y` before `x` is perfectly valid Haskell. In addition, the values for `x` and `y` are constants, and we cannot reassign them later. Haskell does not have variables in the traditional sense like other programming languages.
@@ -154,9 +158,9 @@ Now a human can solve `x = 5` and `y = 10`, but Haskell is going to try to do th
 
 ```haskell
 y   = 2 * x
-    = 2 * (y - 5) (substitute x = y - 5)
-    = 2 * (2 * (y - 5) - 5) (substitute y = 2 * (y - 5) using the above line)
-    = 2 * (2 * (2 * (2 * (y - 5) - 5) - 5) - 5) (substitution y using the above line)
+    = 2 * (y - 5)                                   substitute x = y - 5
+    = 2 * (2 * (y - 5) - 5)                         substitute y = 2 * (y - 5) using the above line
+    = 2 * (2 * (2 * (2 * (y - 5) - 5) - 5) - 5)     substitution y using the above line
     ...
 ```
 
@@ -186,8 +190,8 @@ and after "30" has been printed to the screen, we are complete.
 1. `putStrLn` will print a string and go to the next line
 1. `let x in y` means given what's written in `x`, solve for `y`
 1. Haskell only uses substitution and simplification when evaluating expressions
-1. Expressions which cannot be solved, or have some kind of error are said to be equal to "bottom" or ⊥.
-1. `show` will convert something to a `String`. In this case, an integer.
+1. Expressions which cannot be solved, or have some kind of error are said to be equal to "bottom" or ⊥
+1. `show` will convert something to a `String`. In this case, an integer
 
 #### Exercises
 
@@ -212,7 +216,7 @@ toFahrenheit :: Int -> Int
 toFahrenheit c = (9 * c) `quot` 5 + 32
 
 (>.<) :: Int -> Int -> Int
-x >.< y = (x + y) `quot` 2
+x >.< y = (x + y) `quot` 2      -- "quot" is integer division, so x `quot` y is x divided by y.
 ```
 
 We are introduced to some new syntax. First of all, out type signatures looks a bit different. `toFahrenheit :: Int -> Int` means that `toFahrenheit` is a function which takes an `Int` (the temperature in celsius) as an argument and returns an `Int` (the temperature in Fahrenheit). We also have `(>.<) :: Int -> Int -> Int`. That means that the function `>.<` takes an `Int`, then it takes another `Int`, then it returns the average of the two as an `Int`. When writing the type signature, we need to put `>.<` in parenthesis, which is why we see `(>.<)`.
@@ -224,10 +228,36 @@ If instead we use letters, numbers, underscores and apostrophes to define a func
 If we want to use a prefix function as an infix operator, we can surround the function name in backticks. If we want to use an infix operator as a prefix function, we can surround it in parenthesis:
 
 ```haskell
-x >.< y = (>.<) x y
-quot x y = x `quot` y
+x >.< y     =   (>.<) x y
+quot x y    =   x `quot` y
 ```
 
+Once we have defined a function, Haskell will use it to substitute values. After we defined `toFahrenheit`, anywhere `toFahrenheit x` appears, we can replace it with ``(9 * x) `quot` 5 + 32``. Similarly, anwhere `x >.< y` appears, we can replace it with ``(x + y) `quot` 2``.
+
+Without some kind of control flow, we are very limited in what we can achieve. There must be some way in which we can make branching calculations. In order to introduce this, let's introduce something called *guards*. Guards will allow us to write functions that behave differently based on their arguments. For this example, we can implement a sign function, which returns 1 for positive numbers, -1 for negative numbers, 0 for 0.
+
+```haskell
+sign :: Int -> Int
+sign x
+    | x > 0 = 1
+    | x < 0 = -1
+    | otherwise = 0
+ ```
+ 
+ Guards are given by a vertical bar followed by an expression. If the expression is true, the function will evaluate to the value on the right of the equals sign. The guards are checked from top to bottom. For example `sign -3` checks the first guard. Since `x > 0` is false, then we move down to the next guard. since `x < 0` is true, `sign -3` equals the value on the right, so we can substitute `sign -3` with `-1`. Our last guard has a special value called `otherwise` which always succeeds. This construct is similar to `if`, `else if` and `else` in other languages.
+ 
+#### Summary
+
+1. Function names start with a lowercase letter, and then include lowercase letters, uppercase letters, digits, underscores and apstrophes. They are called using prefix notation.
+1. Operators consist of one or more of the following `!#$%&⋆+./<=>?@\^|-~:`, and must not begin with a colon. Operators are called using infix notation.
+1. To call a named function in infix notation, surround it in backticks, to call an operator using prefix notation, surround it in parenthesis.
+1. Guards are the equivalent of `if`, `else if`, and `else` in other programming languages. The special value `otherwise` always succeeds.
+
+#### Exercises
+
+1. Write a recursive function which returns the factorial of n.
+1. Using what you have learned, write a recursive function for the greatest common divisor of two integers.
+1. Using substitution and simplification, and some examples of your choosing, see how haskell would evaluate your function. Does the expression become larger and larger, or does it remain the same size?
 
 ## Lists and arithmetic
 
