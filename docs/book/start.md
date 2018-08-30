@@ -261,49 +261,53 @@ sign x
 
 ## Lists and arithmetic
 
-For the next program we'll try to print all the even numbers below 20:
+For the next program we'll print a Celsius to Fahrenheit converter.
 
 ```
-0
-2
-4
-6
-8
-10
-12
-14
-16
-18
+0	32
+10	50
+20	68
+30	86
+40	104
+50	122
+60	140
+70	158
+80	176
+90	194
+100	212
 ```
 
 The program consists of multiple function definitions, and we are introduced to some new concepts: comments, lists, new syntax, and some new functions.
 
 ```haskell
--- Print some even numbers
 main :: IO ()
-main = putStr evenNumbers
+main = putStr table
 
 -- A list is denoted by square brackets. and each element of the list is
 -- separated by a comma
-numbers :: [Int]
-numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+celsius :: [Int]
+celsius = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
 
--- "makeEven" is a function that takes an Int and returns an Int, so we write 
--- that as Int -> Int.
-makeEven :: Int -> Int
-makeEven x = 2 * x 
+fahrenheit :: [Int]
+fahrenheit = toFahrenheit <$> celsius
 
-evenNumbers :: String
-evenNumbers = let
-    -- "fmap" allows us to do something to everything in a collection of things
-    evenNumbers = fmap makeEven numbers
+toFahrenheit :: Int -> Int
+toFahrenheit c = (9 * c) `quot` 5 + 32
 
-    -- "show" converts something to a String
-    evenNumberStrings = fmap show evenNumbers
+combineWithTab :: String -> String -> String
+combineWithTab str1 str2 = str1 ++ "\t" ++ str2
+
+table :: String
+table = let
+    -- <$> allows us to do something to everything in a collection of things
+    celsiusStrings = show <$> celsius
+    fahrenheitStrings = show <$> fahrenheit
+    
+    tableList = zipWith combineWithTab celsiusStrings fahrenheitStrings
 
     -- unlines takes a list of Strings and joins them together, with a line 
     -- between them
-    in unlines evenNumberStrings
+    in unlines tableList
 ```
 
 Any line beginning with `--` is a comment. Comments begin from the hyphen and extend to the end of the line. They are ignored by the compiler, and are for people reading your code only. 
