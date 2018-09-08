@@ -1,6 +1,8 @@
-## Explaining Applicative
+# Applicative Functors
 
-We were just introduced to the `Functor` typeclass and the `<$>` function which allows us to apply a regular function to something with a side effect. Unfortunately, `<$>` only allows us to use one side effect value. We can see this from it's type signature:
+## Explaining the Applicative typeclass
+
+We were just introduced to the `Functor` typeclass and the `<$>` function which allows us to apply a regular function to something with a side effect. Unfortunately, `<$>` only allows us to use one side effect value as an argument. We can see this from it's type signature:
 
 ```haskell
 -- only takes a function which takes one value and returns another: (a -> b)
@@ -43,10 +45,49 @@ myFunc' x y = go <$> (100 `safeDiv` y) <*> (150 `safeDiv` y) where
 And there you have it. We can apply multiple argument functions to side effect values. The general principle of function application in this manner is
 
 ```haskell
-myFunction = regularFunction <$> argument0 <*> argument1 <*> argument2 <*> ... <*> argumentN
+-- If we can write
+regularFunction argument0 argument1 ... argumentN
+-- fora pure function, then we can write
+regularFunction <$> sideEffect argument0 <*> sideEffect argument1 <*> ... <*> sideEffect argumentN
+-- if the arguments to that function have side effects.
 ```
 
-where `argument0` to `argumentN` are side effect values of the same type.
+where `argument0` to `argumentN` are side effect values of the same type. The `<*>` function is part of the Applicative typeclass. Side effects that can be combined
 
-TODO : continue
+#### Exercises 1
 
+1. Write a program that asks the user to input two integers on separate lines, and prints the result of adding those two numbers together.
+1. Using what you have learned above. Modify your program to add the following feature: if the user inputs something that isn't a number, print "Not a number" and exit. (Hint: The `readMaybe` function from the `Text.Read` module will return `Nothing` when it fails rather than terminating the program)
+
+### Example: Lists
+
+We mentioned previously that `[a]` represents a non-deterministic value. When we think of a list as a side effect, we think of it having all the values in the list *at the same time*. For example if we have a list `[1, 2, 3]`, then, we think of it as a single integer, that could be either 1, or, 2, or 3. If our values exist in a "quantum" state where they are every value at the same time, then every time we apply a function to that value, we have to apply it to every value it could be, for example:
+
+```haskell
+ghci> (*3) <$> [1, 2, 3]
+[3,6,9]
+ghci> succ <$> [1, 2, 3]
+[2,3,4]
+```
+
+But what about functions that take two arcuments? How do they behave? Let's try.
+
+```haskell
+ghci> (+) <$> [1, 2, 3] <*> [10, 20, 30]
+[11,21,31,12,22,32,13,23,33]
+```
+
+What it's doing is taking one value from the list on the left, and adding it to one value from the array on the right. It does this for every possible combination of values. So if you want to apply a function to combination of values, you can use a list:
+
+```haskell
+ghci> animals = ["dog", "cat", "chicken"]
+ghci> adjectives = ["loud", "hungry", "brown"]
+ghci> (\a b -> a ++ " " ++ b) <$> adjectives <*> animals
+["loud dog","loud cat","loud chicken","hungry dog","hungry cat","hungry chicken","brown dog","brown cat","brown chicken"]
+```
+
+#### Summary
+
+* `<$>` can only be used to apply a function to a single side effect value.
+* If we would write `regularFunction a b c d`, we can also write `regularFunction <$> s a <*> s b <*> s c <*> s d` where `s` is a side effect belonging to the `Applicative` typeclass.
+* `Maybe` is a side effect for errors, and `[]` is a side effect for non-determinism.
