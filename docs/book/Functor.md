@@ -80,4 +80,8 @@ Both `<$` and `<$>` can be used for any side effect belonging to the `Functor` t
 2. Write a safe function using `<$>` to calculate `(100 / x) + 5` which doesn't crash when `x` is zero.
 3. Write a safe function using `<$` to calculate `(x / x)` which doesn't crash when `x` is zero. (Note `(x / x)` is equal to `1` everywhere, except where `x` is zero. Wehn `x` is zero, `(x / x)` is undefined.
 
-## Some more examples
+## Further use of `Functor`
+
+We have already discussed the function `fmap` which maps a function over every element in a collection. It turns out that `fmap` and `<$>` are the same function, just with different names. That means we can think of `fmap` as two different things: we can think of it as mapping values over a collection, or we can think of it as applying a regular function to the return value of a side effect.
+
+TODO: expand
