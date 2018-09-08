@@ -1,3 +1,5 @@
+# Functors
+
 ## Basic operations:
 
 `Functor` is a typeclass which is useful when you want to do something to a value after some side effect has occurred. for example, consider a `head` function that instead of giving an error on an empty list, returns `Nothing`:
