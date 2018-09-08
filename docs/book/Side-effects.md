@@ -63,16 +63,15 @@ Some other useful side effects that can be used in Haskell
 * `State s a`: Found in `Control.Monad.State` in the package "mtl". The `State` side effect allows us to use a internal state which we can modify.
 * `Writer w a`: Found in `Control.Monad.Writer` in the package "mtl". The `Writer` side effect allows us to use logging.
 * `Reader r a`: Found in `Control.Monad.Reader` in the package "mtl". The `Reader` side effect allows us to read data from shared variables inside functions.
-* `RWS r w s a`: A coimbination of `Reader`, `Writer` and `State.
+* `RWS r w s a`: A coimbination of `Reader`, `Writer` and `State`.
 
-... and many more.
+... and many more. Because side effects are declared as part of their type signature. This means that we can tell ahead of time what functions are going to do what. A function with a return type of `State s a` will have an internal state, but will not be able to throw errors for example. A function with return type `Maybe a` will be able to fail with `Nothing` but it won't have any internal state.
 
-TODO
-
+Declaring a side effect in our type signature allows us to use functions with that side effect internally in our functions. For example, consider a function we call `externalFunc` which has a type of `IO ()`. We have declared that `externalFunc` can perform some input/output, so that means `externalFunc` is allowed to call other functions internally which have input/output side effects. Another example would be that `externalFunc` has a type of `Maybe a`. That means that `externalFunc` may fail, so `externalFunc` can internally use other functions which can fail as well, and we won't have to handle the errors before returning anything. Note that `externalFunc` with a type of `Maybe a` will not be able to perform input/output. It can only throw errors. This just means that what we see in the type signature is what we get, so no surprises! The type system of Haskell will check to make sure you aren't using side effects you haven't declared, and we will see some exmaples of how this happens.
 
 ## Notes
 
-1. Although functions may have side effects in other languages, the vast majority of software is written this way. So when I say it has the potential to cause confusion, I don't mean that it is necessarily a bad feature as such, it just means that it's one less thing we have to worry about in Haskell.
+1. Although functions may have side effects in other languages, the vast majority of software is written this way. So when I say it has the potential to cause confusion, I don't mean that it is necessarily a bad feature as such, it just means that it's one less thing we have to worry about in Haskell, that you do have to worry about in other languages.
 2. Functions in haskell actually *can* do one other thing apart from transform their values: throw an error. Any value can be equal to bottom, so any value can be an error.
 
 #### Answers
