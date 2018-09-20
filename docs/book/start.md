@@ -102,13 +102,14 @@ The function definition comes after the equals sign. `putStrLn` (**put** a **str
 ```haskell
 functionName argment1 argument2 ... argumentN
 ```
-In other languages, function application is usually denoted by parenthesis (e.g. `myFunction()`). Since in Haskell we are going to be using function applicatin a lot, parenthesi are not used.
+In other languages, function application is usually denoted by parenthesis (e.g. `myFunction()`). Since in Haskell we are going to be using function application a lot, parenthesis are not used.
 
 A series of characters surrounded by double quotes like "Hello World!" is called a *String* in Haskell (note the capital S in "String"). a `String` is a `List` (collection) of `Char` (characters). As expected, it stores some text. When expressing a string like this, it can be called a string literal.
 
 #### Exercises
 
 1. Try replace `putStrLn` with `putStr`. What happens?
+2. Replace "Hello World!" with a message of your choosing.
 
 ## A simple calculator
 
@@ -123,7 +124,9 @@ main = let
     in putStrLn (show y)
 ```
 
-The result of running this program should be `30`. Let's examine the part after `main =`. We have `let <expressions> in <expression>`. Writing `let x in y` in Haskell is called a *let expression*. And it simply means that given what is written in `x`, solve for `y`. Consider for a moment that you are in a Math class and you are asked the following question, which is a duplicate of the above code:
+Wa use `+` to add two numbers together, and `*` to multiply them together. In addition, for all every type of number, we can subtract them using `-`.
+
+The result of running this program should be `30`. Let's examine the part after `main =`. We have `let <expressions> in <expression>`. Writing `let x in y` in Haskell is called a *let expression*. And it simply means that given what is written in `x`, solve for `y`. Consider for a moment that you are in a mathematics class and you are asked the following question, which is a duplicate of the above code:
 
 ```haskell
 Given that
@@ -142,9 +145,9 @@ y   = 2x
     = 30                simplify
 ```
 
-And this is exactly what Haskell does behind the scenes. Note that because Haskell works the same way as a math student does, it does not require the expressions to be in order. Defining `y` before `x` is perfectly valid Haskell. In addition, the values for `x` and `y` are constants, and we cannot reassign them later. Haskell does not have variables in the traditional sense like other programming languages.
+And this is exactly what Haskell does behind the scenes. Note that because Haskell works the same way as a math student does, it does not require the expressions to be in order. Defining `y` above `x` is perfectly valid Haskell. In addition, the values for `x` and `y` are constants, and we cannot reassign or change them later. Haskell does not have variables in the traditional sense like other programming languages.
 
-Haskell can only do two things to evaluate an expression. It can either *simplify* and expression if it has enough information, or it can *substitute* one expression into another. If you give it a problem that cannot be solved using these two operations, then it will fail. For example let's consider another question you might see in a Mathematics class.
+Haskell can only do two things to evaluate an expression. It can either *simplify* an expression if it has enough information, or it can *substitute* one expression into another. If you give it a problem that cannot be solved using these two operations, then it will fail. For example let's consider another question you might see in a mathematics class.
 
 ```haskell
 Given that
@@ -154,7 +157,7 @@ x = y - 5
 Solve for y
 ```
 
-Now a human can solve `x = 5` and `y = 10`, but Haskell is going to try to do the following:
+Now a human can solve `x = 5` and `y = 10` through various methods, but Haskell is going to get stuck doing the following:
 
 ```haskell
 y   = 2 * x
@@ -166,7 +169,7 @@ y   = 2 * x
 
 And it will continue substituting forever without reaching an answer. It is important that you only give expressions that Haskell can always evaluate using only simplification and substitution, otherwise your program will either run out of memory, or run indefinitely. In this case, because Haskell cannot evaluate `y`, we say that `y` is equal to *bottom*, or ⊥ (which is written as `_|_` in plain ASCII). If something is equal to bottom, then there has been sime kind of error when trying to evaluate it. If your program hangs, press `Ctrl + C` on the command prompt to stop it.
 
-The only other new thing we see here is the `show` function. `show` is a function which will convert something into a `String`. In this case, we use it to convert an integer into a string so we can print it to the screen. So in total, Haskell does the following:
+The only other new thing we see here is the `show` function. `show` is a function which will convert something into a `String`. In this case, we use it to convert an integer into a string so we can print it to the screen. So for our calculator program, Haskell does the following:
 
 ```haskell
 main = let
@@ -219,20 +222,20 @@ toFahrenheit c = (9 * c) `quot` 5 + 32
 x >.< y = (x + y) `quot` 2      -- "quot" is integer division, so x `quot` y is x divided by y.
 ```
 
-We are introduced to some new syntax. First of all, out type signatures looks a bit different. `toFahrenheit :: Int -> Int` means that `toFahrenheit` is a function which takes an `Int` (the temperature in celsius) as an argument and returns an `Int` (the temperature in Fahrenheit). We also have `(>.<) :: Int -> Int -> Int`. That means that the function `>.<` takes an `Int`, then it takes another `Int`, then it returns the average of the two as an `Int`. When writing the type signature, we need to put `>.<` in parenthesis, which is why we see `(>.<)`.
+We are introduced to some new syntax. First of all, our type signatures looks a bit different. `toFahrenheit :: Int -> Int` means that `toFahrenheit` is a function which takes an `Int` (the temperature in celsius) as an argument and returns an `Int` (the temperature in Fahrenheit). An `Int` is the basic integer type in Haskell. We also have `(>.<) :: Int -> Int -> Int`. That means that the function `>.<` takes an `Int`, then it takes another `Int`, then it returns the average of the two as an `Int`. When writing the type signature, we need to put `>.<` in parenthesis, which is why we see `(>.<)`.
 
-When we define functions that are operators (i.e. using symbols like `>.<` or `+` or `*`), they are automatically applied using *infix notation*. Infix is where we use functions like `+` and `*` which we put in between arguments. For example, `+` is a function which takes two arguments, and returns the result of adding them together (e.g. 2 + 5), `*` is a similar function which takes two numbers as arguments but instead returns the result of the two numbers multiplied together.
+When we define functions that are operators (i.e. using symbols like `>.<` or `+` or `*`), they are automatically applied using *infix notation*. Infix notation is where we use functions like `+` and `*` which we put in between our arguments. For example, `+` is a function which takes two arguments, and returns the result of adding them together (e.g. 2 + 5), `*` is a similar function which takes two numbers as arguments but instead returns the result of the two numbers multiplied together.
 
-If instead we use letters, numbers, underscores and apostrophes to define a function (e.g `toFahrenheit`). By default, these functions are applied using *prefix notation*. Prefix notation is where the function name is placed before the arguments (e.g: `show y`)
+If instead we use letters, numbers, underscores and apostrophes to define a function (e.g `toFahrenheit`), then our function is applied using *prefix notation*. Prefix notation is where the function name is placed before the arguments (e.g: `show y`)
 
 If we want to use a prefix function as an infix operator, we can surround the function name in backticks. If we want to use an infix operator as a prefix function, we can surround it in parenthesis:
 
 ```haskell
-x >.< y     =   (>.<) x y
-quot x y    =   x `quot` y
+x >.< y     is the same as   (>.<) x y
+quot x y    is the same as   x `quot` y
 ```
 
-Once we have defined a function, Haskell will use it to substitute values. After we defined `toFahrenheit`, anywhere `toFahrenheit x` appears, we can replace it with ``(9 * x) `quot` 5 + 32``. Similarly, anwhere `x >.< y` appears, we can replace it with ``(x + y) `quot` 2``.
+Once we have defined a function, Haskell will use it to substitute values. Once we hve defined `toFahrenheit`, anywhere `toFahrenheit x` appears, we can replace it with ``(9 * x) `quot` 5 + 32``. Similarly, anwhere `x >.< y` appears, we can replace it with ``(x + y) `quot` 2``.
 
 Without some kind of control flow, we are very limited in what we can achieve. There must be some way in which we can make branching calculations. In order to introduce this, let's introduce something called *guards*. Guards will allow us to write functions that behave differently based on their arguments. For this example, we can implement a sign function, which returns 1 for positive numbers, -1 for negative numbers, 0 for 0.
 
@@ -244,20 +247,75 @@ sign x
     | otherwise = 0
  ```
  
- Guards are given by a vertical bar followed by an expression. If the expression is true, the function will evaluate to the value on the right of the equals sign. The guards are checked from top to bottom. For example `sign -3` checks the first guard. Since `x > 0` is false, then we move down to the next guard. since `x < 0` is true, `sign -3` equals the value on the right, so we can substitute `sign -3` with `-1`. Our last guard has a special value called `otherwise` which always succeeds. This construct is similar to `if`, `else if` and `else` in other languages.
+We are introduced to comparison operators with the above code. Comparison operators take two values and return `True` or `False`. Note the capital letter in `True` and `False`. Below is a list of comparison operators available by default and some examples:
+
+```haskell
+(==)                    "Equal to"
+3 == 5                  False
+2 == 2                  True
+
+(/=)                    "Not Equal to"
+3 /= 5                  True
+2 /= 2                  False
+
+(>)                     "Greater than"
+10 > 3                  True
+5 > 5                   False
+4 > 7                   False
+
+(<)                     "Less than"
+10 < 3                  False
+5 < 5                   False
+4 < 7                   True
+
+(>=)                    "Greater than or equal to"
+10 >= 3                 True
+5 >= 5                  True
+4 >= 7                  False
+
+(<=)                    "Less than or equal to"
+10 <= 3                 False
+5 <= 5                  True
+4 <= 7                  True
+```
+
+In addition, we are introduced to guards. Guards are given by a vertical bar followed by an expression. If the expression results in `True`, the function will evaluate to the value on the right of the equals sign. The guards are checked from top to bottom. For example `sign -3` checks the first guard. Since `-3 > 0` is `False`, then we move down to the next guard. since `-3 < 0` is true, `sign -3` equals the value on the right, so we can substitute `sign -3` with `-1`. Our last guard has a special value called `otherwise` which always succeeds. This construct is similar to `if`, `else if` and `else` in other languages.
+
+Let's consider writing a function that takes two numbers `a` and `b`, and returns `a` to the power of `b`. 
+
+```haskell
+power :: Int -> Int
+power a b
+    | b == 0 = 1
+    | otherwise = a * power a (b - 1)
+```
+
+In the above definition, we say that anything to the power of zero is equal to 1, otherwise x<sup>y</sup> is equal to x * x<sup>y - 1</sup>. For example 3<sup>4</sup> equals 3 * 3<sup>3</sup>, or 10<sup>3</sup> equals 10 * 10<sup>2</sup>.  We have now been introduced to *recursion*. Recursion is where we use a function inside of itself to get a result. To show that what we have written above is correct, let's consider an example. We will check it using our "mathematics class" method:
+
+``` haskell
+power 2 4   = 2 * power 2 3                     -- We can substitute power a b with a * power a (b - 1)
+            = 2 * 2 * power 2 2                 -- b is still not zero, we substitute again
+            = 2 * 2 * 2 * power 2 1             -- substitute again
+            = 2 * 2 * 2 * 2 * power 2 0         -- and again
+            = 2 * 2 * 2 * 2 * 1                 -- b is equal to zero, so we substitute in 1 instead
+            = 2 * 2 * 2 * 2                     -- simplify
+```
+
+So `power 2 4` is indeed 2 to the power of 4. 
  
 #### Summary
 
 1. Function names start with a lowercase letter, and then include lowercase letters, uppercase letters, digits, underscores and apstrophes. They are called using prefix notation.
 1. Operators consist of one or more of the following `!#$%&⋆+./<=>?@\^|-~:`, and must not begin with a colon. Operators are called using infix notation.
 1. To call a named function in infix notation, surround it in backticks, to call an operator using prefix notation, surround it in parenthesis.
+1. We have available some eoperators which will perform comparisons, they are `==`, `/=`, `>`, `<`, `<=` and `>=`. 
 1. Guards are the equivalent of `if`, `else if`, and `else` in other programming languages. The special value `otherwise` always succeeds.
 
 #### Exercises
 
-1. Write a recursive function which returns the factorial of n.
-1. Using what you have learned, write a recursive function for the greatest common divisor of two integers.
-1. Using substitution and simplification, and some examples of your choosing, see how haskell would evaluate your function. Does the expression become larger and larger, or does it remain the same size?
+1. Write a recursive function that multiplies two numbers together by adding them repeatedly. You are not allowed to use the built in `*` function.
+1. Write a recursive function which returns the factorial of `n`. The factorial of `n` is zero if n is zero, and equal to `n` multiplied by the factorial of `n - 1` otherwise.
+1. Using substitution and simplification, and some examples of your choosing, see how haskell would evaluate your function.
 
 ## Lists and arithmetic
 
