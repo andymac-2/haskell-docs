@@ -545,6 +545,4 @@ A more complicated example would be to print to the screen a conversion table be
 
 ## Notes
 
-#### Note 1
-
-I'm probably going to be criticised by experianced haskellers for using "Hello World" as a starting program, as it will not adequately explain how `IO` works in Haskell. Unfortunately the only other way is to let users learn a large volume of material before learning how to write useful programs. Since this book is designed primarily to write useful programs, and not to explain mathematical theory, I don;t think it's necessary this early to explain what monads are, but primarily just how to use them.
+1. I will porbably be criticised by some Haskell purists who strongly believe that "Hello World" is not a suitable starting program to learn Haskell, because it skips a lot of information about monads, and side effects. However, I think it's important to teach how to write useful programs early on, and `IO` is a big part of that.
