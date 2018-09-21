@@ -62,7 +62,50 @@ $ stack exec hello-world-exe
 Hello World!
 ```
 
-If you see the words "Hello World!" On the screen, then your environment is now set up. You can use the command `stack build && stack exec hello-world-exe` in order to compile and run your program. 
+If you see the words "Hello World!" On the screen, then your environment is now set up. You can use the command `stack build && stack exec hello-world-exe` in order to compile and run your program.
+
+### GHCi
+
+GHCi or *GHC interactive* is an interactive terminal that can be used to evaluate haskell expressions. GHCi can be used for debugging, or just as a playground for trying new things. To start GHCi, navigate somewhere into the `hello-world` directory you just created, and use `stack ghci` to run GHCi. You will be greeted with a prompt which may look something like this:
+
+```haskell
+*Main Lib>
+```
+
+Which means that the `Main` module and the `Lib` module have been loaded. `Main` and `Lib` correspond to `app/Main.hs` and `src/Lib.hs` respectively. You can write any valid haskell expression and it will evaluate when you press return:
+
+```haskell
+*ghci> 2 + 2
+4
+*ghci> head [1, 2, 3]
+1
+*ghci> True && False
+False
+```
+
+Open up `src/Lib.hs` and replace it with the following:
+
+```haskell
+testString :: String
+testString = "It Works!"
+```
+
+After this moment, whenever we use GHCi, we'll specify it by writing `*ghci>`. Go back into your GHCi terminal and type the following:
+
+```haskell
+*ghci> :r
+```
+
+This will reload all of the files in your project. To test that it has in fact reloaded your files:
+
+```haskell
+*ghci> testString
+"It works!"
+```
+
+You write functions in your `src/Lib.hs` file, and use `:r` to load them into an interactive session. We will do this a lot in this tutorial.
+
+For additional help, use the `:h` command, or go to the (user guide)[https://downloads.haskell.org/~ghc/master/users-guide/ghci.html]
 
 ## Your First Program
 
@@ -87,7 +130,7 @@ decalares that the function called `main` has a *type* of `IO ()`. The two colon
 
 Functions in Haskell may be similar to those found in other programming languages, but unlike functions in other languages, the only thing that a function in Haskell can do is return a value, and that value must only be determined by the information given to it by it's arguments. A function that does something else apart from returning a value based purely on it's arguments is said to have *side effects*. We will talk about side effects in more detail later.
 
-In Haskell if a function has any side effects, they must be declared as part of the function's type. In order for any program to be useful, it must perform some input, and some output. Since these are considered side effects by Haskell, they must be declared beforehand. The type `IO ()` has two parts. `IO` stands for the input/output side effect, and `()` is the return value. `()` is the same as `void`, `null`, `undefined` or `nil` in other languages. It essentially means that the function returns no value. That means, the only thing that `main` will do, if it does not return a value, is to perform some input/output.
+In Haskell if a function has any side effects, they must be declared as part of the function's type. In order for any program to be useful, it must perform some input, and some output. Since these are considered side effects by Haskell, they must be declared beforehand. The type `IO ()` has two parts. `IO` stands for the input/output side effect, and `()` is the return value. `()` (pronounced "unit") is the same as `void`, `null`, `undefined` or `nil` in other languages. It essentially means that the function returns no value. That means, the only thing that `main` will do, if it does not return a value, is to perform some input/output.
 
 The second line of the program defines what `main` actually is:
 
@@ -102,9 +145,9 @@ The function definition comes after the equals sign. `putStrLn` (**put** a **str
 ```haskell
 functionName argment1 argument2 ... argumentN
 ```
-In other languages, function application is usually denoted by parenthesis (e.g. `myFunction()`). Since in Haskell we are going to be using function application a lot, parenthesis are not used.
+Using functions this way is called *prefix notation*. In other languages, function application is usually denoted by parenthesis (e.g. `myFunction()`). Since in Haskell we are going to be using function application a lot, parenthesis are not used.
 
-A series of characters surrounded by double quotes like "Hello World!" is called a *String* in Haskell (note the capital S in "String"). a `String` is a `List` (collection) of `Char` (characters). As expected, it stores some text. When expressing a string like this, it can be called a string literal.
+A series of characters surrounded by double quotes like "Hello World!" is called a *String* in Haskell (note the capital S in "String"). a `String` is a `List` (collection) of `Char` (characters). As expected, it stores some text. When expressing a string like this, it is called called a string literal.
 
 #### Exercises
 
@@ -126,7 +169,7 @@ main = let
 
 Wa use `+` to add two numbers together, and `*` to multiply them together. In addition, for all every type of number, we can subtract them using `-`.
 
-The result of running this program should be `30`. Let's examine the part after `main =`. We have `let <expressions> in <expression>`. Writing `let x in y` in Haskell is called a *let expression*. And it simply means that given what is written in `x`, solve for `y`. Consider for a moment that you are in a mathematics class and you are asked the following question, which is a duplicate of the above code:
+The result of running this program should be `30`. Let's examine the part after `main =`. We have `let <expressions> in <expression>`. Writing `let x in y` in Haskell is called a *let expression*. We can write a `let` expression anywhere we would can write a normal expression. It simply means that given what is written in `x`, solve for `y`. Consider for a moment that you are in a mathematics class and you are asked the following question, which is a duplicate of the above code:
 
 ```haskell
 Given that
@@ -163,11 +206,11 @@ Now a human can solve `x = 5` and `y = 10` through various methods, but Haskell 
 y   = 2 * x
     = 2 * (y - 5)                                   substitute x = y - 5
     = 2 * (2 * (y - 5) - 5)                         substitute y = 2 * (y - 5) using the above line
-    = 2 * (2 * (2 * (2 * (y - 5) - 5) - 5) - 5)     substitution y using the above line
+    = 2 * (2 * (2 * (2 * (y - 5) - 5) - 5) - 5)     substitute y using the above line
     ...
 ```
 
-And it will continue substituting forever without reaching an answer. It is important that you only give expressions that Haskell can always evaluate using only simplification and substitution, otherwise your program will either run out of memory, or run indefinitely. In this case, because Haskell cannot evaluate `y`, we say that `y` is equal to *bottom*, or ⊥ (which is written as `_|_` in plain ASCII). If something is equal to bottom, then there has been sime kind of error when trying to evaluate it. If your program hangs, press `Ctrl + C` on the command prompt to stop it.
+And it will continue substituting forever without reaching an answer. It is important that you only give expressions that Haskell can always evaluate using only simplification and substitution, otherwise your program will either run out of memory, or run indefinitely. In this case, because Haskell cannot evaluate `y`, we say that `y` is equal to *bottom*, or ⊥ (which is written as `_|_` in plain ASCII). If something is equal to bottom, then there has been some kind of error when trying to evaluate it. If your program hangs, press `Ctrl + C` on the command prompt to stop it.
 
 The only other new thing we see here is the `show` function. `show` is a function which will convert something into a `String`. In this case, we use it to convert an integer into a string so we can print it to the screen. So for our calculator program, Haskell does the following:
 
@@ -193,13 +236,13 @@ and after "30" has been printed to the screen, we are complete.
 1. `putStrLn` will print a string and go to the next line
 1. `let x in y` means given what's written in `x`, solve for `y`
 1. Haskell only uses substitution and simplification when evaluating expressions
-1. Expressions which cannot be solved, or have some kind of error are said to be equal to "bottom" or ⊥
+1. Expressions which cannot be solved using only simplification and substitution, or have some kind of error are said to be equal to "bottom" or ⊥
 1. `show` will convert something to a `String`. In this case, an integer
 
 #### Exercises
 
 1. Replace `y = x * 2` with `y = x * 2.0`. Does anything change?
-1. Experiment with different mathematical expressions for `x` and `y`. Try adding something for `z` as well. 
+1. Experiment with different mathematical expressions for `x` and `y`. Try adding something for `z` as well.
 1. For some of your modifications try to evaluate the expressions by hand like we did above.
 
 ## Functions
@@ -212,7 +255,7 @@ Functions can also be operators. Operators contain one or more of the following 
 !, #, $, %, &, ⋆, +, ., /, <, =, >, ?, @, \, ^, |, -, ~, :
 ```
 
-In addition to this, they must not begin with a colon. Some operators we are already familiar with are `+` and `*` from the above examples. Now that we have that out of the way, let's start making some of our own functions. we will create a function which takes a temperature in Celsius and returns a temperature in Fahrenheit using the formula `f = (9/5)C + 32`, and another function which takes the mean of two numbers. We will make this one an operator and create a funny symbol for it (for example: `>.<`)
+In addition to this, they must not begin with a colon. Some operators we are already familiar with are `+` and `*` from the above examples. Now that we have that out of the way, let's start making some of our own functions. We will create a function which takes a temperature in Celsius and returns a temperature in Fahrenheit using the formula `f = (9/5)C + 32`, and another function which takes the mean of two numbers. We will make this one an operator and create a funny symbol for it (for example: `>.<`). Below is how to write this in Haskell
 
 ```haskell
 toFahrenheit :: Int -> Int
@@ -222,7 +265,7 @@ toFahrenheit c = (9 * c) `quot` 5 + 32
 x >.< y = (x + y) `quot` 2      -- "quot" is integer division, so x `quot` y is x divided by y.
 ```
 
-We are introduced to some new syntax. First of all, our type signatures looks a bit different. `toFahrenheit :: Int -> Int` means that `toFahrenheit` is a function which takes an `Int` (the temperature in celsius) as an argument and returns an `Int` (the temperature in Fahrenheit). An `Int` is the basic integer type in Haskell. We also have `(>.<) :: Int -> Int -> Int`. That means that the function `>.<` takes an `Int`, then it takes another `Int`, then it returns the average of the two as an `Int`. When writing the type signature, we need to put `>.<` in parenthesis, which is why we see `(>.<)`.
+We are introduced to some new syntax. First of all, our type signatures looks a bit different. `toFahrenheit :: Int -> Int` means that `toFahrenheit` is a function which takes an `Int` (the temperature in celsius) as an argument and returns an `Int` (the temperature in Fahrenheit). An `Int` is the basic integer type in Haskell. We also have `(>.<) :: Int -> Int -> Int`. That means that the function `>.<` takes an `Int`, then it takes another `Int`, then it returns the average of the two as an `Int`. You'll notice that we don't use any special notation for the type of the return value. The return value type is just the last `Int`, and the arguments are the first two `Int`s, which are separated with `->`. We don't write something like `Int Int -> Int` to differentiate the return value from it's arguments. This will be important later. When writing the type signature, we need to put operators in parenthesis, which is why we see `(>.<)` instead of `>.<`.
 
 When we define functions that are operators (i.e. using symbols like `>.<` or `+` or `*`), they are automatically applied using *infix notation*. Infix notation is where we use functions like `+` and `*` which we put in between our arguments. For example, `+` is a function which takes two arguments, and returns the result of adding them together (e.g. 2 + 5), `*` is a similar function which takes two numbers as arguments but instead returns the result of the two numbers multiplied together.
 
@@ -237,7 +280,97 @@ quot x y    is the same as   x `quot` y
 
 Once we have defined a function, Haskell will use it to substitute values. Once we hve defined `toFahrenheit`, anywhere `toFahrenheit x` appears, we can replace it with ``(9 * x) `quot` 5 + 32``. Similarly, anwhere `x >.< y` appears, we can replace it with ``(x + y) `quot` 2``.
 
-Without some kind of control flow, we are very limited in what we can achieve. There must be some way in which we can make branching calculations. In order to introduce this, let's introduce something called *guards*. Guards will allow us to write functions that behave differently based on their arguments. For this example, we can implement a sign function, which returns 1 for positive numbers, -1 for negative numbers, 0 for 0.
+#### Exercises
+
+1. Create a prefix function called `square` which takes a number and squares it.
+1. Create an infix function called `/\` which determines the area of a triangle of base length `b`, and height `h`
+1. Write type signatures for the above functions, and test them in GHCi
+
+## Making decisions in code
+
+Without some kind of control flow, we are very limited in what we can achieve. There must be some way in which we can make branching calculations, or "decisions" in our code. We might want two different things based on the result of something else. To achieve this we will introduce the boolean type (called `Bool`).
+
+A `Bool` can only have two values, either `True` or `False`. Because there are only two values that it can be, there are not going to be too many functions which do anything useful. In Haskell we have `&&` (pronounced "And") which will only be true if both arguments are `True`, we have `||`, which will be `True` if at least one argument is `True`, and we have `not` which will give the opposite of a boolean value.
+
+```haskell
+*ghci> not True
+False
+*ghci> not False
+True
+*ghci> True && False
+False
+*ghci> True && True
+True
+*ghci> True || False
+True
+*ghci> False || False
+False
+```
+
+We'll take the time to create our own function that works the same as `not`, and call it `not'`. The `not` function is almost the simplest function that makes a "decision". `not` will decide to return `True` if we give it `False`, and vice versa. This is written in Haskell about as simply as you could imagine:
+
+```haskell
+not' :: Bool -> Bool
+not' True = False
+not' False = True
+```
+
+We simply tell the comiuler what we want the result to be for each value. As an aside, the apostrophe after `not` is called *prime*, and is used to indicate that a change or modification, or a new version of something. `foo'` is therfore pronounced "foo prime". A more compilcated example of a function is `&&` which only returns `True` if both of it's arguments are `True`. We'll call our copy of this function `&&&`:
+
+```haskell
+(&&&) :: Bool -> Bool -> Bool
+True &&& True = True
+_ &&& _ = False
+```
+
+Again, we simply tell Haskell what we actually want the result to be. In the second line of the definition, we use underscores as arguments. If we put an underscore when definining a function where an argument should be, it tells the compiler that we don't care what that value is. As long as both arguments are not `True`, then we don't care what the arguments are, we already know that the answer is going to be `False`.
+
+The part to the left of the equals sign is called a *pattern*. When we see that particular pattern in our code, we can *substitute* it with the part to the right of the equals sign. Haskell will try the patterns from the top of the file first, and then progress down the file to the bottom. We can see this in action using the following function:
+
+```haskell
+matchingTest :: Bool -> Bool -> Bool
+matchingTest True _ = True
+matchingTest _ True = False
+```
+
+```haskell
+*ghci> matchingTest True True
+True
+```
+
+Even though both patterns match `matchingTest True True`, the first line captures the match first, so the result is `True`. For completeness, try evaluating `matchingTest False False` which doesn't match *any* pattern. Since we haven't told the compiler what `matchingTest False False` is, we get an error.
+
+Compare our `not'` function to our `toFahrenheit` example. With our `toFahrenheit` function, to the left of the equals sign, we have `toFahrenheit c`. Wherever a pattern includes a name beginning with a *lowercase* letter, the pattern will *always* match where the name appears, and the value can be accessed using the name. For example when we write `toFahrenheit 52`, wherever `c` appears in the definition of `toFahrenheit`, we can replace it with `52`. If, however, a part of a pattern includes a name beginning with an *uppercase* letter, the pattern will match if and only if the value is the same as the pattern. This is a distinction between *data constructors* which begin with an uppecse letter, and *variables* which begin with a lowercase letter, which we will talk about more detail later. To demonstrate this, consider the following definition for a copy of the `||` function we'll call `|||`:
+
+```haskell
+(|||) :: Bool -> Bool -> Bool
+True ||| _ = True
+False ||| x = x
+```
+
+The boolean "or" function returns `True` as long as one of it's arguments is `True`. In the above function, `True ||| anything` will match with the first line, and return `True` As discussed before, an underscore means we don't care what the value is, so an underscore will match with anything. In the second line `False ||| anything` will match with the second line. Since `x` is a variable, it will always match, and we can replace any instance of `x` to the right of the equals sign with the value of `x`. To show that our `|||` function is correct, we can use GHCi:
+
+```haskell
+*ghci> True ||| False
+True
+*ghci> False ||| True
+True
+*ghci> False ||| False
+False
+```
+
+TODO: below
+
+
+We can use this to create an `if'` function, which will evaluate to one thing if something is `True`, and another thing if `False`
+
+```haskell
+if' :: Bool -> a -> a -> a
+if' True trueValue _ = trueValue
+if' False _ falseValue = falseValue
+```
+
+We could use this to write a function 
 
 ```haskell
 sign :: Int -> Int
