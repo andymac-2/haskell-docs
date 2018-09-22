@@ -238,7 +238,7 @@ in show c ++ "\t" ++ show f ++ "\n" ++ restOfTable
 
 The first line above just tells us that the variable `f`, meaning fahrenheit in this example, is equal to `quot (9 * c) 5 + 32`, which is just some math to convert celsius to fahrenheit. The result is then the temperature in celsius, plus a tab (`\t`) plus the temperature in fahrenheit, plus a new line (`\n`) plus whatever the rest of the table is. In Haskell, we simply tell the compiler what the result is, an not how to get there. Intuitively, a conversion table starting at `0` to `100` in steps of `10` is actually just a single line for the temperature at `0`, added to a table starting at `10` and going to `100` in increments of `10`.
 
-![Diagram illustrating the parts of the temperature table](images/beginning/tempTable.svg)
+![Diagram illustrating the parts of the temperature table](images/beginning/tempTable2.svg)
 
 ## Functions
 
