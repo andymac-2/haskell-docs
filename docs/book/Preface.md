@@ -16,17 +16,13 @@ In terms of previous knowledge, I will assume a high school level of mathematics
 
 ## Setting up your environment
 
-The first thing any programmer does with any language is write a "Hello World" program. This ensures that your build environment is set up correctly. I reccomend [the haskell tool stack](https://github.com/commercialhaskell/stack/) for first time users. If you already have a haskell environment, you can sklip the next section. Many parts of this book will assume that you have `stack` installed.
-
-The best way to learn programming is to start writing programs. I'm not going to try to get bogged down with details about what the best way to set your environment is, as this can be corrected later. Ideally we can get quickly to the point in which you can start writing useful programs in Haskell, covering some of the main features of the language but may skip over some of the more techincal details. Experienced programmers may find this chapter misleading, as some of the content may not be precise, or best practice.
-
-To get a useful environment oprational, I suggest installing the Haskell tool stack. A tutorial can be found [here](https://docs.haskellstack.org/en/stable/install_and_upgrade/). If you already have a haskell environment installed, you can skip this section and go to "Your First Program". Once stack is installed navigate into a working directory and run the following:
+The first thing any programmer does with any language is write a "Hello World" program. This ensures that your build environment is set up correctly. I recommend [the haskell tool stack](https://github.com/commercialhaskell/stack/) for first time users. A tutorial to install stack can be found [here](https://docs.haskellstack.org/en/stable/install_and_upgrade/) If you already have a haskell environment, you can skip the next section. Many parts of this book will assume that you have `stack` installed. Once stack is installed navigate into a new directory and run the following on the command line:
 
 ```bash
 $ stack new hello-world
 ```
 
-Once this is complete you should see a directory structure:
+Once this is complete you should see a directory structure similar to the following:
 
 ```bash
 .
