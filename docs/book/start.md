@@ -145,7 +145,7 @@ When we define top level functions, we can call them from anywhere in the file. 
 Functions can also be operators. Operators contain one or more of the following symbols:
 
 ```
-!, #, $, %, &, ⋆, +, ., /, <, =, >, ?, @, \, ^, |, -, ~, :
+! # $ % & ⋆ + . / < = > ? @ \ ^ | - ~ :
 ```
 
 In addition to this, they must not begin with a colon. Some operators we are already familiar with are `+` and `*` from the above examples. Now that we have that out of the way, let's start making some of our own functions. We will create a function which takes a temperature in Celsius and returns a temperature in Fahrenheit using the formula `f = (9/5)C + 32`, and another function which takes the mean of two numbers. We will make this one an operator and create a funny symbol for it (for example: `>.<`). Below is how to write this in Haskell
@@ -312,14 +312,18 @@ if' False _ falseValue = falseValue
 
 Notice our type signature again. We are already familiar with what a `Bool` is, but what's `a`?. In the same way that we have data constructors mentioned above like `True` and `False`, we begin with uppercate letters, we also have *type constructors*, which also begin with a capital letter (Like `Bool`). In the same way we have variables which begin with a lowercase letter, we have *type variables* which also begin with a lowercase letter. Type constructors, like data constructors, only match when the value is the same. Type variables, like regular variables, will match with anything, and the value will be available whenever you see the same name. In essence, we say that we don't care what the type of `a` is, as long as all of the `a`'s have the same type. This means we can use our `if'` function for *any* type we can think of.
 
-We can use this to write more complex functions
+Haskell actually has a built in syntax for `if`, which has the form `if <booleanExpression> then <trueValue> else <falseValue>`. As an example wei'll write a sign function which gives `-1` if the a number is negative, `1` if the number is positive, and `0` otherwise:
 
 ```haskell
-isPositive :: Int -> Bool
-
- ```
+sign x :: Int -> Int
+sign x = if x < 0 
+    then -1 
+    else if x > 0
+        then 1
+        else 0
+```
  
-We are introduced to comparison operators with the above code. Comparison operators take two values and return `True` or `False`. Note the capital letter in `True` and `False`. Below is a list of comparison operators available by default and some examples:
+We are introduced to comparison operators with the above code. Comparison operators take two values and return `True` or `False`. Below is a list of comparison operators available by default and some examples:
 
 ```haskell
 (==)                    "Equal to"
