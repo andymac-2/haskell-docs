@@ -83,7 +83,7 @@ y   = 2x
 
 And this is exactly what Haskell does behind the scenes. Note that because Haskell works the same way as a math student does, it does not require the expressions to be in order. Defining `y` above `x` is perfectly valid Haskell. In addition, the values for `x` and `y` are constants, and we cannot reassign or change them later. Haskell does not have variables in the traditional sense like other programming languages.
 
-Haskell can only do two things to evaluate an expression. It can either *simplify* an expression if it has enough information, or it can *substitute* one expression into another. If you give it a problem that cannot be solved using these two operations, then it will fail. For example let's consider another question you might see in a mathematics class.
+Haskell can only do two things to evaluate an expression. It can either *simplify* an expression if it has enough information, or it can *substitute* one expression into another. Note that in Haskell, we only substitute from left to right: that is, in te above example, we can replace `y` with `x * 2`, but we cannot replace `x * 2` with `y`. If you give it a problem that cannot be solved using these two operations, then it will fail. For example let's consider another question you might see in a mathematics class.
 
 ```haskell
 Given that
