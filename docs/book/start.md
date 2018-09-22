@@ -340,7 +340,7 @@ True
 
 Even though both patterns match `matchingTest True True`, the first line captures the match first, so the result is `True`. For completeness, try evaluating `matchingTest False False` which doesn't match *any* pattern. Since we haven't told the compiler what `matchingTest False False` is, we get an error.
 
-Compare our `not'` function to our `toFahrenheit` example. With our `toFahrenheit` function, to the left of the equals sign, we have `toFahrenheit c`. Wherever a pattern includes a name beginning with a *lowercase* letter, the pattern will *always* match where the name appears, and the value can be accessed using the name. For example when we write `toFahrenheit 52`, wherever `c` appears in the definition of `toFahrenheit`, we can replace it with `52`. If, however, a part of a pattern includes a name beginning with an *uppercase* letter, the pattern will match if and only if the value is the same as the pattern. This is a distinction between *data constructors* which begin with an uppecse letter, and *variables* which begin with a lowercase letter, which we will talk about more detail later. To demonstrate this, consider the following definition for a copy of the `||` function we'll call `|||`:
+Let's comapre our `not'` function to our `toFahrenheit` example. With our `toFahrenheit` function, to the left of the equals sign, we have `toFahrenheit c`. Wherever a pattern includes a name beginning with a *lowercase* letter, the pattern will *always* match where the name appears, and the value can be accessed using the name. For example when we write `toFahrenheit 52`, wherever `c` appears in the definition of `toFahrenheit`, we can replace it with `52` to get the answer. If, however, a part of a pattern includes a name beginning with an *uppercase* letter, the pattern will match if and only if the value is the same as the pattern. This is a distinction between *data constructors* which begin with an uppecse letter, and *variables* which begin with a lowercase letter, which we will talk about more detail later. To demonstrate this, consider the following definition for a copy of the `||` function we'll call `|||`:
 
 ```haskell
 (|||) :: Bool -> Bool -> Bool
@@ -359,8 +359,52 @@ True
 False
 ```
 
-TODO: below
+We can also pattern match numbers and letters (and any other data type). Try out using these functions:
 
+```haskell
+notZero :: Int -> Bool
+notZero 0 = False
+notZero _ = True
+
+isWhitespace :: Char -> Bool
+isWhitepace ' ' = True
+isWhitespace '\t' = True
+isWhitespace _ = False
+```
+
+```haskell
+*ghci> notZero 2
+True
+*ghci> notZero 0
+False
+*ghci> isWhitespace ' '
+True
+*ghci> isWhitespace 'c'
+False
+```
+
+For completeness, we can actually write `|||` a bit more simply:
+
+```haskell
+(|||) :: Bool -> Bool -> Bool
+False ||| False = False
+_ ||| _ = True
+```
+
+#### Summary
+
+* `Bool` has only two value: `True` and `False`
+* Available to use, we have `||`, `&&` and `not` functions which operate on `Bool`
+* We can pattern match fucntions to make "decisions".
+* Patterns with an underscore always match, and the result is ignored.
+* Patterns with a name starting with a lowercase letter always match, and the value is available whenever the name appears in the function definition. These are called *variables*.
+* Patterns with a name starting with an uppercase letter match ony if the value is that same as the pattern. names starting with uppercase letters are called *data constructors*.
+
+#### Exercises
+
+1. Write a function called `xor` which takes two arguments and returns `True` only if both arguments are different.
+
+## Comparisons and more decisions
 
 We can use this to create an `if'` function, which will evaluate to one thing if something is `True`, and another thing if `False`
 
