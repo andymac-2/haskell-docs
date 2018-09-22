@@ -1,5 +1,7 @@
 # The Beginning
 
+The only way to learn programming is to start writing programs. In this section, I will give a very brief overview of some of the main language features in an attempt to get the reader to a point in which they can begin writing useful programs for themselves. An advanced reader may notice that some of the information here is not precise, but it should bring the user to a point in which they can start writing programs of their own as quickly as possible.
+
 ## Your First Program
 
 To begin, let's start by writing a simple "Hello World!" program<sup>[1](#notes)</sup>.
@@ -8,6 +10,8 @@ To begin, let's start by writing a simple "Hello World!" program<sup>[1](#notes)
 main :: IO ()
 main = putStrLn "Hello World!"
 ```
+
+And run using `stack build && stack exec <program name>-exe`.
 
 ```
 Hello World!
@@ -56,28 +60,29 @@ main :: IO ()
 main = let
     y = x * 2
     x = 10 + 5
-
-    in putStrLn (show y)
+    in putStrLn ("x equals " ++ show x ++ ", y equals " ++ show y ++ ".")
 ```
 
 Wa use `+` to add two numbers together, and `*` to multiply them together. In addition, for all every type of number, we can subtract them using `-`.
 
-The result of running this program should be `30`. Let's examine the part after `main =`. We have `let <expressions> in <expression>`. Writing `let x in y` in Haskell is called a *let expression*. We can write a `let` expression anywhere we would can write a normal expression. It simply means that given what is written in `x`, solve for `y`. Consider for a moment that you are in a mathematics class and you are asked the following question, which is a duplicate of the above code:
+The result of running this program should be `x equals 15, y equals 30.` Let's examine the part after `main =`. We have `let <expressions> in <expression>`. Writing `let x in y` in Haskell is called a *let expression*. We can write a `let` expression anywhere we would can write a normal expression. It simply means that given what is written in `x`, solve for `y`. Consider for a moment that you are in a mathematics class and you are asked the following question, which is a duplicate of the above code:
 
 ```haskell
 Given that
 y = 2x
 x = 10 + 5
 
-Solve for y
+Solve for x and y
 ```
 
 your working for this question may be
 
 ```haskell
+x   = 10 + 5
+    = 15                simplify
+    
 y   = 2x      
-    = 2 * (10 + 5)      substitute x
-    = 2 * 15            simplify   
+    = 2 * 15            substitute x 
     = 30                simplify
 ```
 
@@ -105,38 +110,135 @@ y   = 2 * x
 
 And it will continue substituting forever without reaching an answer. It is important that you only give expressions that Haskell can always evaluate using only simplification and substitution, otherwise your program will either run out of memory, or run indefinitely. In this case, because Haskell cannot evaluate `y`, we say that `y` is equal to *bottom*, or ⊥ (which is written as `_|_` in plain ASCII). If something is equal to bottom, then there has been some kind of error when trying to evaluate it. If your program hangs, press `Ctrl + C` on the command prompt to stop it.
 
-The only other new thing we see here is the `show` function. `show` is a function which will convert something into a `String`. In this case, we use it to convert an integer into a string so we can print it to the screen. So for our calculator program, Haskell does the following:
+We also experince the `show` function. `show` is a function which will convert something into a `String`. In Haskell, the text of a number is distinct from the number itself. Consider that a phone number such as `0470 101 234` is not actually a number in a sense, becuase it is distinctly different from `470,101,234`. It also doesn't make sense to add or subtract two phone numbers either. In this case, we use the `show` function to convert an integer into a `String` so we can print it to the screen. 
+
+The last part of the program that hasn;t been explained yet is the `++` operator. `++` will concatenate two `List`s together. As mentioned above, `String` is a `List` of `Char`, so we can use `++` to join two `String`s together. For example:
+
+```haskell
+*ghci> "Hello " ++ "World!"
+"Hello World!"
+*ghci> "Pi is equal to " ++ show pi ++ "."
+"Pi is equal to 3.141592653589793."
+```
+
+So for our calculator program, Haskell does the following:
 
 ```haskell
 main = let
     y = x * 2
     x = 10 + 5
 
-    in putStrLn (show y)
+    in putStrLn ("x equals " ++ show x ++ ", y equals " ++ show y ++ ".")
     
-main    = putStrLn (show y)
-        = putStrLn (show (x * 2))
-        = putStrLn (show ((10 + 5) * 2))
-        = putStrLn (show (15 * 2))
-        = putStrLn (show 30)
-        = putStrLn "30"
+main    = putStrLn ("x equals " ++ show (10 + 5) ++ ", y equals " ++ show y ++ ".")
+        = putStrLn ("x equals " ++ show 15 ++ ", y equals " ++ show (x * 2) ++ ".")
+        = putStrLn ("x equals " ++ show 15 ++ ", y equals " ++ show (15 * 2) ++ ".")
+        = putStrLn ("x equals " ++ show 15 ++ ", y equals " ++ show 30 ++ ".")
+        = putStrLn ("x equals " ++ "15" ++ ", y equals " ++ "30" ++ ".")
+        = putStrLn "x equals 15, y equals 30."
 ```
 
-and after "30" has been printed to the screen, we are complete.
+and after `equals 15, y equals 30.` has been printed to the screen, we are complete.
 
 #### Summary
 
-1. `putStrLn` will print a string and go to the next line
-1. `let x in y` means given what's written in `x`, solve for `y`
-1. Haskell only uses substitution and simplification when evaluating expressions
-1. Expressions which cannot be solved using only simplification and substitution, or have some kind of error are said to be equal to "bottom" or ⊥
-1. `show` will convert something to a `String`. In this case, an integer
+1. `putStrLn` will print a string and go to the next line.
+1. `let x in y` means given what's written in `x`, solve for `y`.
+1. Haskell only uses substitution and simplification when evaluating expressions.
+1. Expressions which cannot be solved using only simplification and substitution, or have some kind of error are said to be equal to "bottom" or ⊥.
+1. `show` will convert something to a `String`. In this case, an integer.
+1. Use `++` to concatenate two `String`s together.
 
 #### Exercises
 
 1. Replace `y = x * 2` with `y = x * 2.0`. Does anything change?
 1. Experiment with different mathematical expressions for `x` and `y`. Try adding something for `z` as well.
 1. For some of your modifications try to evaluate the expressions by hand like we did above.
+
+## A more complicated example:
+
+For the next program we'll print a Celsius to Fahrenheit converter. I will use the formula `f = c * (9/5) + 32` to do this. Since I'm from Australia, I want to convert to Fahrenheit, so I want my table to look like this:
+
+```
+0	32
+10	50
+20	68
+30	86
+40	104
+50	122
+60	140
+70	158
+80	176
+90	194
+100	212
+```
+
+Our program looks a bit more complicated, and we are introduced to some new syntax:
+
+```haskell
+startTemp = 0
+stopTemp = 100
+tempStep = 10
+
+main :: IO ()
+main = putStr (temperatureTable startTemp)
+
+-- Create a temperature conversion table starting from startTemp, finishing at stopTemp
+temperatureTable :: Int -> String
+temperatureTable c
+    | c <= stopTemp = let
+
+        -- quot is integer division, so quot x y is x divided by y
+        f = quot (9 * c) 5 + 32
+        restOfTable = temperatureTable (c + tempStep)
+        
+        in show c ++ "\t" ++ show f ++ "\n" ++ restOfTable
+
+    | otherwise =  ""
+```
+
+So let's break this down into parts. Firstly at the top of our file we have
+
+```haskell
+startTemp = 0
+stopTemp = 100
+tempStep = 10
+```
+
+This is similar to what we saw when we wrote `y = x * 2` before. We define some numbers which are constants throughout our program. It is good practice to assign constants to a name, for a number of reasons. Firstly, if you want to change the number, you only have to change it one place instead of everywhere the number appears. Secondly, you have given the number a description, so it gives you some idea of what the number is.
+
+The second new part of syntax is the type signature for `temperatureTable`:
+
+```haskell
+temperatureTable :: Int -> String
+```
+
+This line tells us that `temperatureTable` is a function that takes an integer (Which we call `Int`) and returns a `String`. This is a quite similar type to `show` which we have been introduced to before.
+
+```haskell
+temperatureTable c
+    | c <= stopTemp = let ... in ...
+    | otherwise =  ""
+```
+
+The syntax above is called a *guard*. What we say here is that if `c` is less than or equal to `stopTemp` (where we write `<=` for "less than or equal to") then `temperatureTable c` can be substituted for the `let ... in ...` expression. Otherwise, (if `c` is greater than `stopTemp`,) `temperatureTable c` is equal to the empty string `""`. We can also have guards with more than two conditions.
+
+```haskell
+-- quot is integer division, so quot x y is x divided by y
+``` 
+
+The line above is a comment. Comments begin with a double hyphen (`--`) and extend to the end of a line. Comments are ignored by the haskell compiler, so you can use this to tell other people in plain english (or whatever language you prefer) why the code is written the way it is. Everything apart from that we have seen before.
+
+```haskell
+f = quot (9 * c) 5 + 32
+restOfTable = temperatureTable (c + tempStep)
+
+in show c ++ "\t" ++ show f ++ "\n" ++ restOfTable
+```
+
+The first line above just tells us that the variable `f`, meaning fahrenheit in this example, is equal to `quot (9 * c) 5 + 32`, which is just some math to convert celsius to fahrenheit. The result is then the temperature in celsius, plus a tab (`\t`) plus the temperature in fahrenheit, plus a new line (`\n`) plus whatever the rest of the table is. In Haskell, we simply tell the compiler what the result is, an not how to get there. Intuitively, a conversion table starting at `0` to `100` in steps of `10` is actually just a single line for the temperature at `0`, added to a table starting at `10` and going to `100` in increments of `10`.
+
+![Diagram illustrating the parts of the temperature table](images/beginning/tempTable.svg)
 
 ## Functions
 
@@ -394,21 +496,6 @@ So `power 2 4` is indeed 2 to the power of 4.
 
 ## Lists and arithmetic
 
-For the next program we'll print a Celsius to Fahrenheit converter.
-
-```
-0	32
-10	50
-20	68
-30	86
-40	104
-50	122
-60	140
-70	158
-80	176
-90	194
-100	212
-```
 
 The program consists of multiple function definitions, and we are introduced to some new concepts: comments, lists, new syntax, and some new functions.
 
@@ -463,25 +550,7 @@ For most ordinary calculations, `Int` is preferred. Although `Integer` can expre
 
 Lists are a type of collection of something. A list of `Int` is denoted as `[Int]`, so when we write `numbers :: [Int]` we say that `numbers` is a list of `Int`. When we write a list, we write it as several values seperated by commas, and surrounded by square brackets. in our example our list is `[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]`
 
-`makeEven` is our first user defined function we have encountered so far. 
-
-TODO
-
-A more complicated example would be to print to the screen a conversion table between Celsius and Fahrenheit. I will use the formula `f = c * (9/5) + 32` to do this. Since I'm from Australia, I want to convert to Fahrenheit, so I want my table to look like this:
-
-```
-0	32
-10	50
-20	68
-30	86
-40	104
-50	122
-60	140
-70	158
-80	176
-90	194
-100	212
-```
+`makeEven` is our first user defined function we have encountered so far.
 
 
 
