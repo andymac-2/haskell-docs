@@ -109,7 +109,7 @@ For additional help, use the `:h` command, or go to the (user guide)[https://dow
 
 ## Your First Program
 
-To begin, let's start by writing a simple "Hello World!" program [Note 1](#note-1).
+To begin, let's start by writing a simple "Hello World!" program<sup>[1](#notes)</sup>.
 
 ```haskell
 main :: IO ()
@@ -383,12 +383,15 @@ True
 False
 ```
 
-For completeness, we can actually write `|||` a bit more simply:
+For completeness, we can actually write `|||` or `notZero` a bit more simply:
 
 ```haskell
 (|||) :: Bool -> Bool -> Bool
 False ||| False = False
 _ ||| _ = True
+
+notZero :: Int -> Bool
+notZero = (/= 0)
 ```
 
 #### Summary
@@ -402,11 +405,11 @@ _ ||| _ = True
 
 #### Exercises
 
-1. Write a function called `xor` which takes two arguments and returns `True` only if both arguments are different.
+1. Write a function called `xor` which takes two `Bool` arguments and returns `True` only if both arguments are different.
 
 ## Comparisons and more decisions
 
-We can use this to create an `if'` function, which will evaluate to one thing if something is `True`, and another thing if `False`
+We can use pattern matching to create an `if'` function, which will evaluate to one thing if something is `True`, and another thing if `False`
 
 ```haskell
 if' :: Bool -> a -> a -> a
@@ -414,14 +417,13 @@ if' True trueValue _ = trueValue
 if' False _ falseValue = falseValue
 ```
 
-We could use this to write a function 
+Notice our type signature again. We are already familiar with what a `Bool` is, but what's `a`?. In the same way that we have data constructors mentioned above like `True` and `False`, we begin with uppercate letters, we also have *type constructors*, which also begin with a capital letter (Like `Bool`). In the same way we have variables which begin with a lowercase letter, we have *type variables* which also begin with a lowercase letter. Type constructors, like data constructors, only match when the value is the same. Type variables, like regular variables, will match with anything, and the value will be available whenever you see the same name. In essence, we say that we don't care what the type of `a` is, as long as all of the `a`'s have the same type. This means we can use our `if'` function for *any* type we can think of.
+
+We can use this to write more complex functions
 
 ```haskell
-sign :: Int -> Int
-sign x
-    | x > 0 = 1
-    | x < 0 = -1
-    | otherwise = 0
+isPositive :: Int -> Bool
+
  ```
  
 We are introduced to comparison operators with the above code. Comparison operators take two values and return `True` or `False`. Note the capital letter in `True` and `False`. Below is a list of comparison operators available by default and some examples:
@@ -462,9 +464,8 @@ Let's consider writing a function that takes two numbers `a` and `b`, and return
 
 ```haskell
 power :: Int -> Int
-power a b
-    | b == 0 = 1
-    | otherwise = a * power a (b - 1)
+power _ 0 = 1
+power a b = a * power a (b - 1)
 ```
 
 In the above definition, we say that anything to the power of zero is equal to 1, otherwise x<sup>y</sup> is equal to x * x<sup>y - 1</sup>. For example 3<sup>4</sup> equals 3 * 3<sup>3</sup>, or 10<sup>3</sup> equals 10 * 10<sup>2</sup>.  We have now been introduced to *recursion*. Recursion is where we use a function inside of itself to get a result. To show that what we have written above is correct, let's consider an example. We will check it using our "mathematics class" method:
