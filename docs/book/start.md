@@ -236,9 +236,21 @@ restOfTable = temperatureTable (c + tempStep)
 in show c ++ "\t" ++ show f ++ "\n" ++ restOfTable
 ```
 
-The first line above just tells us that the variable `f`, meaning fahrenheit in this example, is equal to `quot (9 * c) 5 + 32`, which is just some math to convert celsius to fahrenheit. The result is then the temperature in celsius, plus a tab (`\t`) plus the temperature in fahrenheit, plus a new line (`\n`) plus whatever the rest of the table is. In Haskell, we simply tell the compiler what the result is, an not how to get there. Intuitively, a conversion table starting at `0` to `100` in steps of `10` is actually just a single line for the temperature at `0`, added to a table starting at `10` and going to `100` in increments of `10`.
+The first line above just tells us that the variable `f`, meaning fahrenheit in this example, is equal to `quot (9 * c) 5 + 32`, which is just some math to convert celsius to fahrenheit. The result is then the temperature in celsius, plus a tab (`\t`) plus the temperature in fahrenheit, plus a new line (`\n`) plus whatever the rest of the table is. In Haskell, we simply tell the compiler what the result is, and not how to get there.
+
+To illoustrate why this works, consider that `temperatureTable c` is a function that will produce a temperature conversion table from `c` to `stopTemp` in increments of `tempStep`. In our case, `temperatureTable c` will produce a table from `c` to `100` degrees celsius in increments of `10`. Through some clever intuition, we notice that a table going from `0` to `100` is almost the same as a table that goes from `10` to `100`, except we have added an extra line at the start. Similarly a table that goes from `10` to `100` is just a table that goes from `20` to `100` with an extra line, and so on, until we get to a table that goes from `100` to `100` which is just going to be a single line:
 
 ![Diagram illustrating the parts of the temperature table](images/beginning/tempTable2.svg)
+
+This is how we reason about recursion. We can solve a big problem by using the result of a slightly smaller problem repeatedly until we get the result we want. Eventually when the problem is small enough, we can just return a straight answer:
+
+```haskell
+temperatureTable c
+    | c <= stopTemp = ...
+    | otherwise =  ""
+```
+
+When we get to the line that says `otherwise`, it implies that `c` is greater than `stopTemp`. A table that goes from `110` to `100` doesn't really make much sense, so if we wanted to produce such a table, it would be empty. The `""` is just an empty `String`. We have made our problem small enough what we can give a "straight answer", a concrete result that does not depend on a smaller table (since there is no smaller table than no table at all!).
 
 ## Functions
 
