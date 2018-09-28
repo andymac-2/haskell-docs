@@ -189,6 +189,7 @@ temperatureTable c
     | c <= stopTemp = let
 
         -- quot is integer division, so quot x y is x divided by y
+        -- quot (9 * c) 5 is mathematically the same as 9c / 5
         f = quot (9 * c) 5 + 32
         restOfTable = temperatureTable (c + tempStep)
         
@@ -238,7 +239,7 @@ in show c ++ "\t" ++ show f ++ "\n" ++ restOfTable
 
 The first line above just tells us that the variable `f`, meaning fahrenheit in this example, is equal to `quot (9 * c) 5 + 32`, which is just some math to convert celsius to fahrenheit. The result is then the temperature in celsius, plus a tab (`\t`) plus the temperature in fahrenheit, plus a new line (`\n`) plus whatever the rest of the table is. In Haskell, we simply tell the compiler what the result is, and not how to get there.
 
-To illoustrate why this works, consider that `temperatureTable c` is a function that will produce a temperature conversion table from `c` to `stopTemp` in increments of `tempStep`. In our case, `temperatureTable c` will produce a table from `c` to `100` degrees celsius in increments of `10`. Through some clever intuition, we notice that a table going from `0` to `100` is almost the same as a table that goes from `10` to `100`, except we have added an extra line at the start. Similarly a table that goes from `10` to `100` is just a table that goes from `20` to `100` with an extra line, and so on, until we get to a table that goes from `100` to `100` which is just going to be a single line:
+To illustrate why this works, consider that `temperatureTable c` is a function that will produce a temperature conversion table from `c` to `stopTemp` in increments of `tempStep`. In our case, `temperatureTable c` will produce a table from `c` to `100` degrees celsius in increments of `10`. Through some clever intuition, we notice that a table going from `0` to `100` is almost the same as a table that goes from `10` to `100`, except we have added an extra line at the start. Similarly a table that goes from `10` to `100` is just a table that goes from `20` to `100` with an extra line, and so on, until we get to a table that goes from `100` to `100` which is just going to be a single line:
 
 ![Diagram illustrating the parts of the temperature table](images/beginning/tempTable2.svg)
 
@@ -250,7 +251,12 @@ temperatureTable c
     | otherwise =  ""
 ```
 
-When we get to the line that says `otherwise`, it implies that `c` is greater than `stopTemp`. A table that goes from `110` to `100` doesn't really make much sense, so if we wanted to produce such a table, it would be empty. The `""` is just an empty `String`. We have made our problem small enough what we can give a "straight answer", a concrete result that does not depend on a smaller table (since there is no smaller table than no table at all!).
+When we get to the line that says `otherwise`, it implies that `c` is greater than `stopTemp`. A table that goes from `110` to `100` for example doesn't make much sense, therefore, the function must return a value that means *nothing*, since the table doesn't exist. The `""` is just an empty `String` that will show up as literally nothing when printed to the screen. We have made our problem small enough so we can give a "straight answer", a concrete result that does not depend on a smaller table (since there is no smaller table than no table at all!). We call these kinds of basic results the *base cases*. Any other results that depend on solving smaller problems are called *recursive cases*.
+
+#### Exercises
+
+1. Modify the program above to add headings for celsius and fahrenheit.
+1. Modify the program to create a celsius to fahrenheit converter.
 
 ## Functions
 
