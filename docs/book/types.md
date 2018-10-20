@@ -1,6 +1,10 @@
 # Haskell types and typeclasses
 
-In haskell, types play a fundamental role to write any useful program. Haskell is a *strongly typed* language, which means that types cannot be converted to one another automatically. Therefore to convert between types you must use a function to do so. Haskell supports a wide range of useful types, and supports advanced typing features, so without further ado, let's introduce some types.
+In Haskell, types play a fundamental role to write any useful program. Haskell is *strongly typed* which means that types will not be converted from one another automatically. It is also *statically typed* which means that the type of a piece of data is known at compile time. This leads to safer code than many other languages, since it restricts us from making the mistake of mixing types together in the wrong ways. Haskell therefore has a lot of information available to tell us if our program is incorrect before we even run it, saving ourselves a lot of headache later in the process.
+
+Haskell also has *type inference*. Therefore, the compiler can usually find out what the type of something is without us explicitly telling it. However, it is often necessary, or good practice to tell the compiler what types we want specifically, otherwise the compiler may choose a poor representation of what we want. This is useful, it allows us to write concise code without types for the most part, and when necessary provide a type signature to help with the understanding of our code.
+
+The type signatures in Haskell are very expressive, and allow use to restrict the number of incorrect programs we write, making it more likely we write the correct one. In extreme cases, and in some other languages, it is possible to *prove* that a program is correct before we ever run it using the type system.
 
 ## Bool
 
