@@ -17,9 +17,11 @@ Functions are therefore, quite a simple concept. We can consider them a "black b
 
 ## Errors and exceptions
 
-In programming, we will always encounter bugs: areas in the code which produce unexpected results, and cause our program to crash, break, or otherwise malfunction. In Haskell it is generally useful to distinguish between two kinds of bugs: errors and exceptions. For the purposes of this book, an *error* is  something wrong with the program itself, that should be fixed, and an exception is an unexpected program state. For example, an error could be when your types mismatch, when you make a typo in your program and it doesn't compile, or when you try to divide by zero. An exception could be where a user selects the wrong options on the command line, and or we try to open a file that no longer exists. The fault of exceptions could lie with the user of the program, the environment in which it is run, or some external factor. They are not the fault of the programmer, however, we can minimise the consequences.
+In programming, we will always encounter bugs: areas in the code which produce unexpected results, and cause our program to crash, break, or otherwise malfunction. In Haskell it is generally useful to distinguish between two kinds of bugs: errors and exceptions. For the purposes of this book, an *error* is  something wrong with the program itself, that should be fixed, and an exception is an unexpected program state. For example, an error could be when your types mismatch, when you make a typo in your program and it doesn't compile, or when you try to divide by zero. An exception could be where a user selects the wrong options on the command line, or we try to open a file that no longer exists. The fault of exceptions could lie with the user of the program, the environment in which it is run, or some external factor. They are not the fault of the programmer, however, we can minimise the consequences.
 
-We will consider two broad categories of errors: compile time errors, and runtime errors. GHC is an extremely smart compiler, that can catch a large number of errors before the program is even run the first time. Any errors that do not stop the program from being compiled may occur when the program is being run. In these cases we have to test our program to make sure that it does the right thing. Unfortunately we cannot always test every possibility. Quite often the program will crash after all the testing has been done in front of a large audience when it is least expected. Alternatively your program may work for yourself, but when somebody else uses it in a way you didn't expect, it may break. For this reason it is generally preferable to write your program in such a way that most errors are caught at compile time.
+We will consider two broad categories of errors: compile time errors, and runtime errors. GHC is an extremely smart compiler, that can catch a large number of errors before the program is even run the first time. Any errors that do not stop the program from being compiled may occur when the program is being run. In these cases we have to test our program to make sure that it does the right thing. Unfortunately we cannot always test every possibility. Quite often the program will crash after all the testing has been done in front of a large audience when it is least expected. Alternatively your program may work for yourself, but when somebody else uses it in a way you didn't expect, it may break. For this reason it is generally preferable to write your program in such a way that most errors are caught at compile time, that way, you don't have to rely on testing every possibility.
+
+Exceptions are handled in many different ways internally. We will cover these ways in later chapters.
 
 ## Functions in Haskell are not completely pure
 
@@ -110,7 +112,9 @@ The `error` function has type `String -> a`. It's return value is totally polymo
 
 ## Total functions.
 
-Total functions are the opposite of partially defined functions. they are defined 
+Total functions are the opposite of partially defined functions. They are defined for every input, and they *terminate* for every input, that is, they will not run forever. The Haskell compiler cannot reliably determine that a function will terminate for every input. In order to determine this, we would need to solve the Halting problem, which is famously impossible for any computer or human to solve. Therefore Haskell will not even attempt to figure out if a loop runs forever. The responsibility for this lies squarely on the programmer.
+
+Whenever possible, use total functions. If every function that you use in your program is a total function, then your program should not encounter any runtime errors. This is because all errors will be caught at compile time.
 
 ## Design by contract
 
@@ -146,10 +150,6 @@ isWeekend _ = False
 ```
 
 We know that `isWeekend` cannot do anything apart from take a valid `Weekday` and return a valid `Bool`.  There are seven weekdays, and for each weekday, we can return either `True` or `False`, therefore, there are only 2 ^ 7 or 128 possible functions `isWeekend` can be. We have restricted an essentially infinite range of posiblilities that our program could be to only 128. In a similar fashion, there are only four valid functions which take a `Bool` and return a `Bool` for example. This makes it incredibly difficult to write the wrong program. In some extreme cases, there is only a single valid function that has a given type. In such a situation, as long as your code compiles, you know that what you have written is correct.
-
-## Total functions
-
-
 
 ## Generic functions
 
