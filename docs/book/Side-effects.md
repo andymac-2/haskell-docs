@@ -69,6 +69,46 @@ Some other useful side effects that can be used in Haskell
 
 Declaring a side effect in our type signature allows us to use functions with that side effect internally in our functions. For example, consider a function we call `externalFunc` which has a type of `IO ()`. We have declared that `externalFunc` can perform some input/output, so that means `externalFunc` is allowed to call other functions internally which have input/output side effects. Another example would be that `externalFunc` has a type of `Maybe a`. That means that `externalFunc` may fail, so `externalFunc` can internally use other functions which can fail as well, and we won't have to handle the errors before returning anything. Note that `externalFunc` with a type of `Maybe a` will not be able to perform input/output. It can only throw errors. This just means that what we see in the type signature is what we get, so no surprises! The type system of Haskell will check to make sure you aren't using side effects you haven't declared, and we will see some exmaples of how this happens.
 
+
+
+
+
+# Rewrite
+
+## Actions
+
+So far we have only experienced pure functions. Pure functions take arguments, return a result based on those arguments and nothing else. Pure functions therefore have certain properties:
+
+- Deterministic: They will return the same result every time they are called. This means that you only need to calculate each result once. You could store the value for later, and know that it will be the same. In an imperative language, there is no guarantee that a function will return the smae value every time.
+- No side effects: Functions do not *do* anything. They take a value and return a result. but do not perform any action, like print to the screen, change your volume, or feed your cat. This means that if we don't use the result of a function, then we don't need to actually calculate it. In an imperative language, we still need to run each function even if we don't use the return value in case it does something behind the scenes.
+
+Due to these properties, Haskell evaluates functions *lazily*, that is, it only calculates the bare minimum required to get the result. Anything else that isn't explicitly required to get the result is left behind.
+
+However, if our program can only use pure functions, then it is not particularly useful. Real world programs need to actually *do* things such as display text, throw errors, make sounds, or send information. Here we introduce actions. Actions are a combination of two things: a *side effect* and a *return value*. Actions belong to either the `Applicative` typeclass, or the `Monad` typeclass. Below are some examples of actions:
+
+```haskell
+-- IO (input/output) is the side effect, () is the return value
+ioAction :: IO ()                
+ioAction = putStrLn "Hello World"
+
+-- The side effect is Maybe, an error action. Int is the return value
+-- in this case if we try to divide by zero, we return Nothing instead
+maybeAction :: Int -> Int -> Maybe Int
+maybeAction _ 0 = Nothing
+maybeAction x y = x `div` y
+
+-- Lists are also considered an action
+-- lists represent non determinism. A list is like schroedinger's cat.
+listAction :: [Int]
+-- In this example we can think of listAction as an Int that is all of
+-- 1, 2, 3, and 4 all at the same time.
+listAction = [1, 2, 3, 4]
+```
+
+
+//TODO
+We are not as free to use actions just like
+
 ## Notes
 
 1. Although functions may have side effects in other languages, the vast majority of software is written this way. So when I say it has the potential to cause confusion, I don't mean that it is necessarily a bad feature as such, it just means that it's one less thing we have to worry about in Haskell, that you do have to worry about in other languages.
