@@ -70,7 +70,7 @@ ghci> succ <$> [1, 2, 3]
 [2,3,4]
 ```
 
-But what about functions that take two arcuments? How do they behave? Let's try.
+But what about functions that take two arguments? How do they behave? Let's try.
 
 ```haskell
 ghci> (+) <$> [1, 2, 3] <*> [10, 20, 30]
@@ -91,3 +91,120 @@ ghci> (\a b -> a ++ " " ++ b) <$> adjectives <*> animals
 * `<$>` can only be used to apply a function to a single side effect value.
 * If we would write `regularFunction a b c d`, we can also write `regularFunction <$> s a <*> s b <*> s c <*> s d` where `s` is a side effect belonging to the `Applicative` typeclass.
 * `Maybe` is a side effect for errors, and `[]` is a side effect for non-determinism.
+
+
+
+
+
+## Miscelaneous notes
+
+## Basic usage
+
+`<$>` and `<*>` are the bread and butter of `Applicative` usage. In the basic sense, if we have a function `g` which is applied to several arguments:
+
+```haskell
+arg1 :: a1
+arg2 :: a2
+arg3 :: a3
+arg4 :: a4
+...
+g :: a1 -> a2 -> a3 -> a4 -> ... -> r
+-- return value is of type: r
+g arg1 arg2 arg3 arg4 ...
+```
+
+Then we can apply `g` to arguments wrapped in an `Applicative` side effect, as long as they are all wrapped in the same type of `Applicative`:
+
+```haskell
+f :: Applicative a => a
+arg1 :: f a1
+arg2 :: f a2
+arg3 :: f a3
+arg4 :: f a4
+...
+g :: a1 -> a2 -> a3 -> a4 -> ... -> r
+-- return value is of type: f r
+g <$> arg1 <*> arg2 <*> arg3 <*> arg4 ...
+```
+
+## (Optional) Rationale
+
+`<$>` is an infix version of `fmap`, but otherwise identical. Any member of the `Applicative` typeclass, is a member of `Functor` by definition. Using our function `g` above, we can use `fmap` to apply `g` to anything that belongs to `Applicative`: 
+
+``` haskell
+fmap  :: Functor f => (a -> b) -> f a -> f b
+(<$>) :: Functor f => (a -> b) -> f a -> f b
+
+-- Note: aything the belongs to Applicative, is also a Functor
+arg1 :: Applicative f => f a1
+g :: a1 -> a2 -> a3 -> a4 -> ... -> r
+g <$> arg1 :: f (a2 -> a3 -> a4 -> ... -> r)
+```
+
+`g <$> a` has a type of `f (a2 -> a3 -> a4 -> ... -> r)`. To turn that into our desired return type (`f r`), we will need to use `<*>`. `<*>` has an interesting type, similar to `fmap`:
+
+```haskell
+(<$>) :: Functor     f =>   (a -> b) -> f a -> f b
+(<*>) :: Applicative f => f (a -> b) -> f a -> f b
+
+
+arg1 :: (Applicative f) => f a1
+arg2 :: (Applicative f) => f a2
+arg3 :: (Applicative f) => f a3
+arg4 :: (Applicative f) => f a4
+...
+g :: a1 -> a2 -> a3 -> a4 -> ... -> r
+g <$> arg1                      :: f (a2 -> a3 -> a4 -> ... -> r)
+g <$> arg1 <*> arg2             :: f (a3 -> a4 -> ... -> r)
+g <$> arg1 <*> arg2 <*> arg3    :: f (a4 -> ... -> r)
+```
+
+Therefore we can use a regular function `g`, and apply it to arguments wrapped in an `Applicative` using `<$>` and `<*>`.
+
+### Examples and usage
+
+```haskell
+Prelude> multiply = (*)
+Prelude> multiply 4 5
+20
+Prelude> multiply <$> Just 4 <*> Just 5
+Just 20
+Prelude> multiply <$> Just 4 <*> Nothing
+Nothing
+Prelude> multiply <$> [4] <*> [5]
+[20]
+Prelude> multiply <$> [4, 3] <*> [5]
+[20,15]
+Prelude> multiply <$> [4, 3] <*> []
+[]
+```
+
+## Applying side effects without using the return value
+
+We can sequence `Applicative` side effects but ignore the return values using `<*` and `<$`. For example:
+
+```haskell
+-- returns Just 20
+multiply <$ Just 10 <*> Just 4 <* Just 17 <*> Just 5
+
+-- This can be written in a more easier to understand way as:
+multiply 
+    <$ Just 10 -- this is ignored
+    <*> Just 4 
+    <* Just 17 -- this is ignored
+    <*> Just 5
+```
+
+If we write it out the second way, we know to ignore the return value for any line beginning weith  `<$` or `<*`. We ignore `Just 10` and `Just 17` and end up multiplying `Just 4` and `Just 5` together to get `Just 20`. This does not appear to be particularly useful, however, the side effects are not ignored. Since the return value is ignored, the return values of ignored arguments can be of any type:
+
+```haskell
+-- Side effects are not ignored, just the return value
+-- returns Nothing
+multiply <$ Nothing <*> Just 4 <* Just 17 <*> Just 5
+
+-- return values are ignored, so they can be any type
+-- returns Just 20
+multiply <$ Just () <*> Just 4 <* Just "Hello there" <*> Just 5
+```
+
+
