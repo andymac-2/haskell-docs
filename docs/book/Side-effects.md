@@ -105,9 +105,45 @@ listAction :: [Int]
 listAction = [1, 2, 3, 4]
 ```
 
+We are not as free to use actions as if we would pure functions. Actions often need to be performed in a particular sequence, and sometimes we might want to perform an action and ignore it's return value. With pure functions, if we don't use the return value, we don't need to calculate it. Actions may actually do something besides return a value, so it is important to sequence actions corretly whether or not you use the return value. To do this, we introduce `do` notation.
 
-//TODO
-We are not as free to use actions just like
+## `do` notation
+
+`do` notation allows us to correctly sequence a series of actions. You can only use actions that belong to the `Monad` class with `do` notation. Below is an example using `do` notation with the `IO` action:
+
+```haskell
+getNumber :: IO Int
+getNumber = do
+    string <- getLine
+    pure (read string)
+
+main :: IO ()
+main = do
+    putStrLn "Please enter a number"
+    num1 <- getNumber
+    putStrLn "Please enter another number"
+    num2 <- getNumber
+    putStrLn (show num1 ++ " + " ++ show num2 ++ " = " ++ show (num1 + num2))
+```
+
+Output:
+
+```
+Please enter a number
+5
+Please enter another number
+7
+5 + 7 = 12
+```
+
+After writing the keyword `do`, we indent the next line. All lines below this are part of the `do` block. There are a few simple rules to follow when using `do` notation.
+
+1. Each line in the `do` block must have the same side effect. For example, `main` has the side effect type `IO`, so all of the lines in the `do` block must have the `IO` side effect. All of the lines in `main` have the type `IO something`, so this rule is satisfied.
+1. If you want to use the return value of a given line, use `<-` to bind it to a variable. In our example, we use `string <- getLine` to read a line from the console.
+1. The last line of a `do` block will be the return value of the entire block. For example, the last line of `main` has the type of `IO ()`, so `main` must have a type of `IO ()`. Our function `getNumber` has a type of `IO Int` so the line `pure (read string)` must also have the type `IO Int`
+1. If you want to do nothing, but return a value, use the function `pure`. In our example, `getNumber` is of type `IO Int`, but `getLine` has a type of `IO String`. We can get the string from the `IO` action using `<-` and we store it in `string`. next we want to return an `Int`. We can convert a `String` into an `Int` using `read`. We can use `pure` to return the `Int` without doing anything else. Note that in Haskell, you can also use the `return` function to do the same thing as `pure`, however, `return` is used in outher languages to do something different, so `pure` is advised to reduce confusion.
+
+
 
 ## Notes
 
