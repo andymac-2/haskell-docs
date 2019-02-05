@@ -123,7 +123,8 @@ main = do
     num1 <- getNumber
     putStrLn "Please enter another number"
     num2 <- getNumber
-    putStrLn (show num1 ++ " + " ++ show num2 ++ " = " ++ show (num1 + num2))
+    let num3 = num1 + num2
+    putStrLn (show num1 ++ " + " ++ show num2 ++ " = " ++ show num3)
 ```
 
 Output:
@@ -142,8 +143,80 @@ After writing the keyword `do`, we indent the next line. All lines below this ar
 1. If you want to use the return value of a given line, use `<-` to bind it to a variable. In our example, we use `string <- getLine` to read a line from the console.
 1. The last line of a `do` block will be the return value of the entire block. For example, the last line of `main` has the type of `IO ()`, so `main` must have a type of `IO ()`. Our function `getNumber` has a type of `IO Int` so the line `pure (read string)` must also have the type `IO Int`
 1. If you want to do nothing, but return a value, use the function `pure`. In our example, `getNumber` is of type `IO Int`, but `getLine` has a type of `IO String`. We can get the string from the `IO` action using `<-` and we store it in `string`. next we want to return an `Int`. We can convert a `String` into an `Int` using `read`. We can use `pure` to return the `Int` without doing anything else. Note that in Haskell, you can also use the `return` function to do the same thing as `pure`, however, `return` is used in outher languages to do something different, so `pure` is advised to reduce confusion.
+1. Pure computations should be put inside of a `let` expression.
+
+TODO: split into sections
+
+## Actions and Embedded Domain Specific Languages
+
+General purpose imperative languages tend to have a limited number of features that they support. Each language differs slightly in it's feature set. Some languages are interpreted, some have strong or weak typing, and in some languages, everything is an object. Eventually, for any general purpose language, we may find a task that your language of choice is not particularly well suited. In these cases, we can use a Domain Specific Language.
+
+A Domain Specific Language, or DSL, is a language which is designed specifically for a single, or a few specific purposes. A DSL may not even be able to perform other tasks. An example of a DSL would be SQL, regular expressions, or HTML. SQL is well designed to modify a database, but you cannot program a game with it. Regular expressions are can be used to find and replace in a text file, but cannot be used to play music. HTML is great for displaying documentation, but it won't be able to format a hard drive.
+
+Haskell allows us to use actions to create embedded DSLs easily. An embedded DSL is a DSL created using parts of the host language itself. In our case, our host language is Haskell. In Haskell, we can pick and choose our side effects like a buffet to create a kind of embedded DSL which we can run at request. The `mtl` library in Haskell provides this buffet
+
+## `Except`: the side effect of exceptions
+
+If we use `Except` from the `mtl` library, we can throw and catch exceptions (runtime errors). We can use the function `throwError` to throw an exception, `liftEither` to turn an `Either` into an `Except`, and `catchError` to handle an exception. If we throw an exception, we recognise that something has gone wrong, so we abort our function and return early.
+
+### `Either`, and `Maybe`: basic errors
+
+## `Reader`: the side effect of immutable state
+
+### `(->) r`: the naked reader
+
+Functions of type `r -> a` are part of the `Monad` typeclass. This is generally written as `(->) r`. When using the naked reader, the argument is passed as the fiurst argument to every line in the block. For example consider a function that returns `True` if a number is between `10` and `20` inclusive, we can write that using the naked reader syntax.
+
+```haskell
+-- original implementation
+between10and20 :: Int -> Bool
+between10and20 x = x >= 10 && x <= 20
+
+-- monadic style
+between10and20' :: Int -> Bool
+between10and20' = do
+    -- our argument is passed first to (>= 10), the result stored in above10
+    above10 <- (>= 10)
+    -- our argument is then passed to (<= 20), the result stored in below20
+    below20 <- (<= 20)
+    -- The final result is true iff above10 and below20 are both true
+    return (above10 && below20)
+    
+-- Applicative style
+between10and20'' :: Int -> Bool
+-- we apply our argument to (>= 10) and (<= 20), then we apply (&&) to the result.
+between10and20'' = (&&) <$> (>= 10) <*> (<= 20)
+```
+
+Thus functions of type `r -> a` can be used to simulate an immutable state, where `r` is the type of the state.
+
+#### `(->) r` is a monad
+
+A function of type `r -> a` is a `Functor`. In order to implement `fmap :: (a -> b) -> (r -> a) -> (r -> b)` we need to be able to convert an `r -> a` to an `r -> b` using a function of type `a -> b`. This is easy, we can use `.` to compose the `a -> b` with the `r -> a` to get an `r -> b`. Therefore `fmap` will be `.`.
+
+`r -> a` is also `Applicative`. In order to implement `pure :: a -> (r -> a)`, we must be able to turn an `a` into a function that takes an `r` and returns an `a`. The only way to do this is to ignore whatever the `r` is and just return the `a` unchanged. The function which ignores it's first argument is `const`, so naturally, `pure` will be `const`.
+
+To implement `(<*>) :: (r -> a -> b) -> (r -> a) -> (r -> b)`, we first realise that it is the same as writing `(<*>) :: (r -> a -> b) -> (r -> a) -> r -> b`. We must somehow use an `r -> a -> b`, an `r -> a`, and an `r` to produce something of type `b`. There is only one way to do this. Take the `r` and apply it to the `r -> a -> b` and the `r -> a` to get an `a -> b` and an `a` respectively. Take the resulting `a` and apply it to the `a -> b` to get something of type `b`. Therefore `(<*>) f g r = f r (g r)`
 
 
+
+## `Writer`: the side effect of logging or accumulation
+
+### `(a, w)`: the basic writer
+
+## `State`: the side effect of state
+
+### `s -> (a, s)`: the simple state transformation
+
+## `RWS`: Combining reader, writer, and state together
+
+## `ST`: The side effect of state threads and real mutable state
+
+## `IO`: The side effect of input and output
+
+## `List`: The side effect of non-determinism
+
+## Combining Side effects
 
 ## Notes
 
