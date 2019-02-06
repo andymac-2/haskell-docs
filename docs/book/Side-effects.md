@@ -139,13 +139,31 @@ Please enter another number
 
 After writing the keyword `do`, we indent the next line. All lines below this are part of the `do` block. There are a few simple rules to follow when using `do` notation.
 
-1. Each line in the `do` block must have the same side effect. For example, `main` has the side effect type `IO`, so all of the lines in the `do` block must have the `IO` side effect. All of the lines in `main` have the type `IO something`, so this rule is satisfied.
-1. If you want to use the return value of a given line, use `<-` to bind it to a variable. In our example, we use `string <- getLine` to read a line from the console.
-1. The last line of a `do` block will be the return value of the entire block. For example, the last line of `main` has the type of `IO ()`, so `main` must have a type of `IO ()`. Our function `getNumber` has a type of `IO Int` so the line `pure (read string)` must also have the type `IO Int`
-1. If you want to do nothing, but return a value, use the function `pure`. In our example, `getNumber` is of type `IO Int`, but `getLine` has a type of `IO String`. We can get the string from the `IO` action using `<-` and we store it in `string`. next we want to return an `Int`. We can convert a `String` into an `Int` using `read`. We can use `pure` to return the `Int` without doing anything else. Note that in Haskell, you can also use the `return` function to do the same thing as `pure`, however, `return` is used in outher languages to do something different, so `pure` is advised to reduce confusion.
+1. Each line in the `do` block must have the same side effect. 
+1. If you want to use the return value of a given line, use `<-` to bind it to a variable. 
+1. The last line of a `do` block will be the return value of the entire block. 
+1. If you want to do nothing, but return a value, use the function `pure`.
 1. Pure computations should be put inside of a `let` expression.
 
-TODO: split into sections
+### Each line musst have the same side effect
+
+For example, `main` has the side effect type `IO`, so all of the lines in the `do` block must have the `IO` side effect. All of the lines in `main` have the type `IO something`, so this rule is satisfied.
+
+### Use `<-` to get the return value from any given line
+
+In our example, we use `string <- getLine` to read a line from the console.
+
+### The return value of the last line is the return value of the whole block
+
+For example, the last line of `main` has the type of `IO ()`, so `main` must have a type of `IO ()`. Our function `getNumber` has a type of `IO Int` so the line `pure (read string)` must also have the type `IO Int`
+
+### To do nothing but return a vlaue, use `pure`.
+
+In our example, `getNumber` is of type `IO Int`, but `getLine` has a type of `IO String`. We can get the string from the `IO` action using `<-` and we store it in `string`. next we want to return an `Int`. We can convert a `String` into an `Int` using `read`. We can use `pure` to return the `Int` without doing anything else. Note that in Haskell, you can also use the `return` function to do the same thing as `pure`, however, `return` is used in outher languages to do something different, so `pure` is advised to reduce confusion.
+
+### Pure computations should be put inside `let` expressions.
+
+
 
 ## Actions and Embedded Domain Specific Languages
 
@@ -160,45 +178,6 @@ Haskell allows us to use actions to create embedded DSLs easily. An embedded DSL
 If we use `Except` from the `mtl` library, we can throw and catch exceptions (runtime errors). We can use the function `throwError` to throw an exception, `liftEither` to turn an `Either` into an `Except`, and `catchError` to handle an exception. If we throw an exception, we recognise that something has gone wrong, so we abort our function and return early.
 
 ### `Either`, and `Maybe`: basic errors
-
-## `Reader`: the side effect of immutable state
-
-### `(->) r`: the naked reader
-
-Functions of type `r -> a` are part of the `Monad` typeclass. This is generally written as `(->) r`. When using the naked reader, the argument is passed as the fiurst argument to every line in the block. For example consider a function that returns `True` if a number is between `10` and `20` inclusive, we can write that using the naked reader syntax.
-
-```haskell
--- original implementation
-between10and20 :: Int -> Bool
-between10and20 x = x >= 10 && x <= 20
-
--- monadic style
-between10and20' :: Int -> Bool
-between10and20' = do
-    -- our argument is passed first to (>= 10), the result stored in above10
-    above10 <- (>= 10)
-    -- our argument is then passed to (<= 20), the result stored in below20
-    below20 <- (<= 20)
-    -- The final result is true iff above10 and below20 are both true
-    return (above10 && below20)
-    
--- Applicative style
-between10and20'' :: Int -> Bool
--- we apply our argument to (>= 10) and (<= 20), then we apply (&&) to the result.
-between10and20'' = (&&) <$> (>= 10) <*> (<= 20)
-```
-
-Thus functions of type `r -> a` can be used to simulate an immutable state, where `r` is the type of the state.
-
-#### `(->) r` is a monad
-
-A function of type `r -> a` is a `Functor`. In order to implement `fmap :: (a -> b) -> (r -> a) -> (r -> b)` we need to be able to convert an `r -> a` to an `r -> b` using a function of type `a -> b`. This is easy, we can use `.` to compose the `a -> b` with the `r -> a` to get an `r -> b`. Therefore `fmap` will be `.`.
-
-`r -> a` is also `Applicative`. In order to implement `pure :: a -> (r -> a)`, we must be able to turn an `a` into a function that takes an `r` and returns an `a`. The only way to do this is to ignore whatever the `r` is and just return the `a` unchanged. The function which ignores it's first argument is `const`, so naturally, `pure` will be `const`.
-
-To implement `(<*>) :: (r -> a -> b) -> (r -> a) -> (r -> b)`, we first realise that it is the same as writing `(<*>) :: (r -> a -> b) -> (r -> a) -> r -> b`. We must somehow use an `r -> a -> b`, an `r -> a`, and an `r` to produce something of type `b`. There is only one way to do this. Take the `r` and apply it to the `r -> a -> b` and the `r -> a` to get an `a -> b` and an `a` respectively. Take the resulting `a` and apply it to the `a -> b` to get something of type `b`. Therefore `(<*>) f g r = f r (g r)`
-
-
 
 ## `Writer`: the side effect of logging or accumulation
 
