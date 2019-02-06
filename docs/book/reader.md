@@ -19,8 +19,11 @@ conversation name = greet name ++ smalltalk name ++ farewell name
 -- Applicative style
 conversationA :: String -> String
 conversationA = go <$> greet <*> smalltalk <*> farewell 
-    where
-        go a b c = a ++ b ++ c
+    where go a b c = a ++ b ++ c
+
+-- Sequential
+conversationS :: String -> String
+conversationS = concat . sequenceA [greet, smalltalk, farewell]
 
 -- Monadic style
 conversationM :: String -> String
@@ -37,6 +40,7 @@ conversationR = runReader $ do
     b <- reader smalltalk
     c <- reader farewell
     return (a ++ b ++ c)
+
 ```
 
 ## Point free style
